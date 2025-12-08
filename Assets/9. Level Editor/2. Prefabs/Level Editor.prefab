@@ -358,7 +358,7 @@ GameObject:
   m_Component:
   - component: {fileID: 6583649706517631119}
   m_Layer: 5
-  m_Name: Pine
+  m_Name: Green
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1148,7 +1148,7 @@ GameObject:
   m_Component:
   - component: {fileID: 689650242193726393}
   m_Layer: 5
-  m_Name: Blue
+  m_Name: Sky
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3235,13 +3235,13 @@ RectTransform:
   - {fileID: 3278435361550173655}
   - {fileID: 7359380840773567910}
   - {fileID: 3563162181195169308}
-  - {fileID: 4752965054800860587}
-  - {fileID: 689650242193726393}
-  - {fileID: 8046971007193910347}
-  - {fileID: 931152535434342068}
-  - {fileID: 326327499282267164}
-  - {fileID: 7530321378843634971}
   - {fileID: 6583649706517631119}
+  - {fileID: 326327499282267164}
+  - {fileID: 8046971007193910347}
+  - {fileID: 7530321378843634971}
+  - {fileID: 689650242193726393}
+  - {fileID: 931152535434342068}
+  - {fileID: 4752965054800860587}
   m_Father: {fileID: 8182893198056013349}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0}
@@ -4628,7 +4628,7 @@ GameObject:
   m_Component:
   - component: {fileID: 326327499282267164}
   m_Layer: 5
-  m_Name: Navy
+  m_Name: Blue
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -8569,7 +8569,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4752965054800860587}
   m_Layer: 5
-  m_Name: Green
+  m_Name: Lime
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -10776,9 +10776,9 @@ MonoBehaviour:
   TileContainer: {fileID: 1412048140588272943}
   WidthInput: {fileID: 4279311803246097841}
   HeightInput: {fileID: 511183698228343167}
-  UpdateGridButton: {fileID: 8587496578408402057}
+  UpdateButton: {fileID: 8587496578408402057}
   LevelName: {fileID: 7470232384467143664}
-  SaveLevel: {fileID: 5611001087760574296}
-  LoadLevel: {fileID: 4145665032907122339}
+  SaveButton: {fileID: 5611001087760574296}
+  LoadButton: {fileID: 4145665032907122339}
   TileToggle: {fileID: 8726333944022303194}
   EmptyToggle: {fileID: 7608980747520159243}

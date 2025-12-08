@@ -778,20 +778,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: Level Editor
       objectReference: {fileID: 0}
-    - target: {fileID: 9206803819110581072, guid: 6a65e991757debd41b537431964716e0, type: 3}
-      propertyPath: TileContainer
-      value: 
-      objectReference: {fileID: 965818493}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 6a65e991757debd41b537431964716e0, type: 3}
---- !u!224 &965818493 stripped
-RectTransform:
-  m_CorrespondingSourceObject: {fileID: 1412048140588272943, guid: 6a65e991757debd41b537431964716e0, type: 3}
-  m_PrefabInstance: {fileID: 565229866}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1112481340
 GameObject:
   m_ObjectHideFlags: 0

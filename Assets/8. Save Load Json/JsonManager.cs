@@ -38,14 +38,6 @@ public static class JsonManager
 
 public class JsonData
 {
-    public int Column { get; set; }
-    public int Row { get; set; }
-    public Dictionary<Vector2Int, TileColor> TileColorDictionary { get; set; }
-
-    public JsonData(int column, int row, Dictionary<Vector2Int, TileColor> tileColorDictionary)
-    {
-        Column = column;
-        Row = row;
-        TileColorDictionary = tileColorDictionary;
-    }
+    public int BoardWidth;
+    public int BoardHeight;
 }

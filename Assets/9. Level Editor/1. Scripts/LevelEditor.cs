@@ -10,17 +10,16 @@ public class LevelEditor : MonoBehaviour
     [SerializeField] private RectTransform TileContainer;
     [SerializeField] private TMP_InputField WidthInput;
     [SerializeField] private TMP_InputField HeightInput;
-    [SerializeField] private Button UpdateGridButton;
+    [SerializeField] private Button UpdateButton;
     private float TileWidth, TileHeight;
-    private int Column, Row;
+    private int BoardWidth, BoardHeight;
     private float GridOffset;
     private Dictionary<Vector2Int, BoardTile> BoardTileDictionary = new Dictionary<Vector2Int, BoardTile>();
-    private Dictionary<Vector2Int, TileColor> TileColorDictionary = new Dictionary<Vector2Int, TileColor>();
 
     [Header("Save/Load Level")]
     [SerializeField] private TMP_InputField LevelName;
-    [SerializeField] private Button SaveLevel;
-    [SerializeField] private Button LoadLevel;
+    [SerializeField] private Button SaveButton;
+    [SerializeField] private Button LoadButton;
 
     [Header("Edit")]
     [SerializeField] private Toggle TileToggle;
@@ -33,37 +32,36 @@ public class LevelEditor : MonoBehaviour
         TileWidth = tileSize.rect.width;
         TileHeight = tileSize.rect.height;
         GridOffset = TileContainer.transform.localPosition.y;
-        UpdateGridButton.onClick.AddListener(UpdateGrid);
-        SaveLevel.onClick.AddListener(SaveToJson);
-        LoadLevel.onClick.AddListener(LoadFromJson);
+
+        UpdateButton.onClick.AddListener(UpdateGrid);
+        SaveButton.onClick.AddListener(SaveLevel);
+        LoadButton.onClick.AddListener(LoadLevel);
     }
 
     private void OnDisable()
     {
-        UpdateGridButton.onClick.RemoveListener(UpdateGrid);
-        SaveLevel.onClick.RemoveListener(SaveToJson);
-        LoadLevel.onClick.RemoveListener(LoadFromJson);
+        UpdateButton.onClick.RemoveListener(UpdateGrid);
+        SaveButton.onClick.RemoveListener(SaveLevel);
+        LoadButton.onClick.RemoveListener(LoadLevel);
     }
 
-    private void SaveToJson()
+    private void SaveLevel()
     {
-        JsonData data = new JsonData(
-            Column,
-            Row,
-            TileColorDictionary);
+        JsonData data = new JsonData();
+        data.BoardWidth = BoardWidth;
+        data.BoardHeight = BoardHeight;
 
         JsonManager.SaveJson(data, LevelName.text);
     }
 
-    private void LoadFromJson()
+    private void LoadLevel()
     {
         JsonData data = JsonManager.LoadJson(LevelName.text);
 
         if (data != null)
         {
-            WidthInput.text = data.Column.ToString();
-            HeightInput.text = data.Row.ToString();
-            TileColorDictionary = data.TileColorDictionary;
+            WidthInput.text = data.BoardWidth.ToString();
+            HeightInput.text = data.BoardHeight.ToString();
             UpdateGrid();
         }
     }
@@ -72,12 +70,12 @@ public class LevelEditor : MonoBehaviour
     {
         if (int.TryParse(WidthInput.text, out int width) && width > 0)
         {
-            Column = width;
+            BoardWidth = width;
         }
 
         if (int.TryParse(HeightInput.text, out int height) && height > 0)
         {
-            Row = height;
+            BoardHeight = height;
         }
 
         ClearGrid();
@@ -93,15 +91,14 @@ public class LevelEditor : MonoBehaviour
                 PoolingSystem.Despawn(Tile.gameObject, boardTile.gameObject);
             }
             BoardTileDictionary.Clear();
-            TileColorDictionary.Clear();
         }
     }
 
     private void CreateGrid()
     {
-        for (int i = 0; i < Column; i++)
+        for (int i = 0; i < BoardWidth; i++)
         {
-            for (int j = 0; j < Row; j++)
+            for (int j = 0; j < BoardHeight; j++)
             {
                 Vector2Int newGrid = new Vector2Int(i, j);
 
@@ -115,7 +112,6 @@ public class LevelEditor : MonoBehaviour
                 newTile.name = $"Tile {newGrid}";
                 newTile.SetData(TileColor.Black);
                 BoardTileDictionary.Add(newGrid, newTile);
-                TileColorDictionary.Add(newGrid, TileColor.Black);
             }
         }
     }
@@ -157,7 +153,6 @@ public class LevelEditor : MonoBehaviour
         {
             PoolingSystem.Despawn(Tile.gameObject, visibleTile.gameObject);
             BoardTileDictionary.Remove(mouseGrid);
-            TileColorDictionary.Remove(mouseGrid);
         }
 
         if (TileToggle.isOn && BoardTileDictionary.ContainsKey(mouseGrid) == false)
@@ -172,21 +167,20 @@ public class LevelEditor : MonoBehaviour
             newTile.name = $"Tile {mouseGrid}";
             newTile.SetData(TileColor.Black);
             BoardTileDictionary.Add(mouseGrid, newTile);
-            TileColorDictionary.Add(mouseGrid, TileColor.Black);
         }
     }
 
     private Vector2 GridToWorld(Vector2Int targetGrid)
     {
-        float newPosX = (targetGrid.x * TileWidth) - (TileWidth * (Column - 1) / 2);
-        float newPosY = (targetGrid.y * TileHeight) - (TileHeight * (Row - 1) / 2);
+        float newPosX = (targetGrid.x * TileWidth) - (TileWidth * (BoardWidth - 1) / 2);
+        float newPosY = (targetGrid.y * TileHeight) - (TileHeight * (BoardHeight - 1) / 2);
         return new Vector2(newPosX, newPosY);
     }
 
     private Vector2Int WorldToGrid(Vector2 targetPos)
     {
-        int newGridX = Mathf.RoundToInt((targetPos.x + (TileWidth * (Column - 1) / 2)) / TileWidth);
-        int newGridY = Mathf.RoundToInt((targetPos.y + (TileHeight * (Row - 1) / 2)) / TileHeight);
+        int newGridX = Mathf.RoundToInt((targetPos.x + (TileWidth * (BoardWidth - 1) / 2)) / TileWidth);
+        int newGridY = Mathf.RoundToInt((targetPos.y + (TileHeight * (BoardHeight - 1) / 2)) / TileHeight);
         return new Vector2Int(newGridX, newGridY);
     }
 }

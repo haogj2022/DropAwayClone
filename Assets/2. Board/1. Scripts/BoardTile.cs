@@ -18,11 +18,6 @@ public class BoardTile : MonoBehaviour
                 break;
         }
     }
-
-    public TileColor GetColor()
-    {
-        return CurrentColor;
-    }
 }
 
 public enum TileColor
