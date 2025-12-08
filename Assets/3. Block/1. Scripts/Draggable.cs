@@ -59,7 +59,7 @@ public class Draggable : MonoBehaviour
                 continue;
             }
 
-            GameObject newBlock = PoolingSystem.Spawn(
+            Image newBlock = PoolingSystem.Spawn<Image>(
                 BaseImage.gameObject,
                 transform,
                 BaseImage.transform.localScale,
@@ -67,10 +67,8 @@ public class Draggable : MonoBehaviour
                 Quaternion.identity);
 
             newBlock.name = $"Block {StartGrid + ShapeGrid[i]}";
-
-            Image newImage = newBlock.GetComponent<Image>();
-            newImage.color = BaseImage.color;
-            ShapeImages.Add(newImage);
+            newBlock.color = BaseImage.color;
+            ShapeImages.Add(newBlock);
 
             if (ShapeGrid[i] == TextGrid)
             {

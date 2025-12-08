@@ -14,7 +14,8 @@ public class LevelEditor : MonoBehaviour
     private float TileWidth, TileHeight;
     private int Column, Row;
     private float GridOffset;
-    private Dictionary<Vector2Int, Color> BoardTileDictionary = new Dictionary<Vector2Int, Color>();
+    private Dictionary<Vector2Int, BoardTile> BoardTileDictionary = new Dictionary<Vector2Int, BoardTile>();
+    private Dictionary<Vector2Int, TileColor> TileColorDictionary = new Dictionary<Vector2Int, TileColor>();
 
     [Header("Save/Load Level")]
     [SerializeField] private TMP_InputField LevelName;
@@ -35,7 +36,6 @@ public class LevelEditor : MonoBehaviour
         UpdateGridButton.onClick.AddListener(UpdateGrid);
         SaveLevel.onClick.AddListener(SaveToJson);
         LoadLevel.onClick.AddListener(LoadFromJson);
-
     }
 
     private void OnDisable()
@@ -50,7 +50,7 @@ public class LevelEditor : MonoBehaviour
         JsonData data = new JsonData(
             Column,
             Row,
-            BoardTileDictionary);
+            TileColorDictionary);
 
         JsonManager.SaveJson(data, LevelName.text);
     }
@@ -61,11 +61,62 @@ public class LevelEditor : MonoBehaviour
 
         if (data != null)
         {
-            ClearGrid();
-
             WidthInput.text = data.Column.ToString();
             HeightInput.text = data.Row.ToString();
-            BoardTileDictionary = data.BoardTile;
+            TileColorDictionary = data.TileColorDictionary;
+            UpdateGrid();
+        }
+    }
+
+    private void UpdateGrid()
+    {
+        if (int.TryParse(WidthInput.text, out int width) && width > 0)
+        {
+            Column = width;
+        }
+
+        if (int.TryParse(HeightInput.text, out int height) && height > 0)
+        {
+            Row = height;
+        }
+
+        ClearGrid();
+        CreateGrid();
+    }
+
+    private void ClearGrid()
+    {
+        if (BoardTileDictionary.Count > 0)
+        {
+            foreach (var boardTile in BoardTileDictionary.Values)
+            {
+                PoolingSystem.Despawn(Tile.gameObject, boardTile.gameObject);
+            }
+            BoardTileDictionary.Clear();
+            TileColorDictionary.Clear();
+        }
+    }
+
+    private void CreateGrid()
+    {
+        for (int i = 0; i < Column; i++)
+        {
+            for (int j = 0; j < Row; j++)
+            {
+                Vector2Int newGrid = new Vector2Int(i, j);
+
+                BoardTile newTile = PoolingSystem.Spawn<BoardTile>(
+                    Tile.gameObject,
+                    TileContainer.transform,
+                    Tile.transform.localScale,
+                    GridToWorld(newGrid),
+                    Quaternion.identity);
+
+                newTile.name = $"Tile {newGrid}";
+                newTile.SetData(TileColor.Black);
+                BoardTileDictionary.Add(newGrid, newTile);
+                TileColorDictionary.Add(newGrid, TileColor.Black);
+            }
         }
     }
 
@@ -102,77 +153,26 @@ public class LevelEditor : MonoBehaviour
     {
         Vector2Int mouseGrid = WorldToGrid(mousePos);
 
-        if (EmptyToggle.isOn && BoardTileDictionary.TryGetValue(mouseGrid, out var tileToEmpty))
+        if (EmptyToggle.isOn && BoardTileDictionary.TryGetValue(mouseGrid, out var visibleTile))
         {
-            //PoolingSystem.Despawn(Tile.gameObject, tileToEmpty);
+            PoolingSystem.Despawn(Tile.gameObject, visibleTile.gameObject);
             BoardTileDictionary.Remove(mouseGrid);
+            TileColorDictionary.Remove(mouseGrid);
         }
 
         if (TileToggle.isOn && BoardTileDictionary.ContainsKey(mouseGrid) == false)
         {
-            GameObject boardTile = PoolingSystem.Spawn(
+            BoardTile newTile = PoolingSystem.Spawn<BoardTile>(
                 Tile.gameObject,
                 TileContainer.transform,
                 Tile.transform.localScale,
                 GridToWorld(mouseGrid),
                 Quaternion.identity);
 
-            //boardTile.name = $"Tile {mouseGrid}";
-            //BoardTile newTile = boardTile.GetComponent<BoardTile>();
-            //newTile.SetData(new Color(0, 0, 0, 0.5f));
-            BoardTileDictionary.Add(mouseGrid, new Color(0, 0, 0, 0.5f));
-        }
-    }
-
-    private void UpdateGrid()
-    {
-        if (int.TryParse(WidthInput.text, out int width) && width > 0)
-        {
-            Column = width;
-        }
-
-        if (int.TryParse(HeightInput.text, out int height) && height > 0)
-        {
-            Row = height;
-        }
-
-        ClearGrid();
-        CreateGrid();
-    }
-
-    private void ClearGrid()
-    {
-        //if (BoardTileDictionary.Count > 0)
-        //{
-        //    foreach (var boardTile in BoardTileDictionary.Values)
-        //    {
-        //        PoolingSystem.Despawn(Tile.gameObject, boardTile.gameObject);
-        //    }
-        //    BoardTileDictionary.Clear();
-        //}
-    }
-
-    private void CreateGrid()
-    {
-        for (int i = 0; i < Column; i++)
-        {
-            for (int j = 0; j < Row; j++)
-            {
-                Vector2Int newGrid = new Vector2Int(i, j);
-
-                GameObject boardTile = PoolingSystem.Spawn(
-                    Tile.gameObject,
-                    TileContainer.transform,
-                    Tile.transform.localScale,
-                    GridToWorld(newGrid),
-                    Quaternion.identity);
-
-                boardTile.name = $"Tile {newGrid}";
-
-                BoardTile newTile = boardTile.GetComponent<BoardTile>();
-                newTile.SetData(new Color(0, 0, 0, 0.5f));
-                BoardTileDictionary.Add(newGrid, new Color(0, 0, 0, 0.5f));
-            }
+            newTile.name = $"Tile {mouseGrid}";
+            newTile.SetData(TileColor.Black);
+            BoardTileDictionary.Add(mouseGrid, newTile);
+            TileColorDictionary.Add(mouseGrid, TileColor.Black);
         }
     }
 

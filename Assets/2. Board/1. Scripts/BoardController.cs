@@ -29,7 +29,7 @@ public class BoardController : MonoBehaviour
             {
                 Vector2Int newGrid = new Vector2Int(i, j);
 
-                GameObject boardTile = PoolingSystem.Spawn(
+                BoardTile boardTile = PoolingSystem.Spawn<BoardTile>(
                     Tile.gameObject,
                     TileContainer.transform,
                     Tile.transform.localScale,
@@ -37,10 +37,8 @@ public class BoardController : MonoBehaviour
                     Quaternion.identity);
 
                 boardTile.name = $"Tile {newGrid}";
-
-                BoardTile newTile = boardTile.GetComponent<BoardTile>();
-                newTile.SetData(new Color(0, 0, 0, 0.5f));
-                BoardTileDictionary.Add(newGrid, newTile);
+                boardTile.SetData(TileColor.Black);
+                BoardTileDictionary.Add(newGrid, boardTile);
             }
         }
     }
@@ -53,7 +51,7 @@ public class BoardController : MonoBehaviour
     private void CreateDraggableBlock()
     {
         Vector2Int redGrid = new Vector2Int(0, 0);
-        GameObject redShape = PoolingSystem.Spawn(
+        Draggable redShape = PoolingSystem.Spawn<Draggable>(
             Block.gameObject,
             BlockContainer.transform,
             Block.transform.localScale,
@@ -61,12 +59,11 @@ public class BoardController : MonoBehaviour
             Quaternion.identity);
 
         redShape.name = $"Red Shape";
-        Draggable redDraggable = redShape.GetComponent<Draggable>();
-        redDraggable.SetData(new Color(1, 0.25f, 0.25f, 1), redGrid, Shape.L);
-        UpdateDraggableDictionary(redGrid, redDraggable);
+        redShape.SetData(new Color(1, 0.25f, 0.25f, 1), redGrid, Shape.L);
+        UpdateDraggableDictionary(redGrid, redShape);
 
         Vector2Int yellowGrid = new Vector2Int(2, 2);
-        GameObject yellowShape = PoolingSystem.Spawn(
+        Draggable yellowShape = PoolingSystem.Spawn<Draggable>(
             Block.gameObject,
             BlockContainer.transform,
             Block.transform.localScale,
@@ -74,12 +71,11 @@ public class BoardController : MonoBehaviour
             Quaternion.identity);
 
         yellowShape.name = $"Yellow Shape";
-        Draggable yellowDraggable = yellowShape.GetComponent<Draggable>();
-        yellowDraggable.SetData(new Color(1, 0.75f, 0, 1), yellowGrid, Shape.Cross);
-        UpdateDraggableDictionary(yellowGrid, yellowDraggable);
+        yellowShape.SetData(new Color(1, 0.75f, 0, 1), yellowGrid, Shape.Cross);
+        UpdateDraggableDictionary(yellowGrid, yellowShape);
 
         Vector2Int blueGrid = new Vector2Int(0, 3);
-        GameObject blueShape = PoolingSystem.Spawn(
+        Draggable blueShape = PoolingSystem.Spawn<Draggable>(
             Block.gameObject,
             BlockContainer.transform,
             Block.transform.localScale,
@@ -87,12 +83,11 @@ public class BoardController : MonoBehaviour
             Quaternion.identity);
 
         blueShape.name = $"Blue Shape";
-        Draggable blueDraggable = blueShape.GetComponent<Draggable>();
-        blueDraggable.SetData(new Color(0, 0.5f, 1, 1), blueGrid, Shape.O);
-        UpdateDraggableDictionary(blueGrid, blueDraggable);
+        blueShape.SetData(new Color(0, 0.5f, 1, 1), blueGrid, Shape.O);
+        UpdateDraggableDictionary(blueGrid, blueShape);
 
         Vector2Int orangeGrid = new Vector2Int(2, 5);
-        GameObject orangeShape = PoolingSystem.Spawn(
+        Draggable orangeShape = PoolingSystem.Spawn<Draggable>(
             Block.gameObject,
             BlockContainer.transform,
             Block.transform.localScale,
@@ -100,9 +95,8 @@ public class BoardController : MonoBehaviour
             Quaternion.identity);
 
         orangeShape.name = $"Orange Shape";
-        Draggable orangeDraggable = orangeShape.GetComponent<Draggable>();
-        orangeDraggable.SetData(new Color(1, 0.5f, 0, 1), orangeGrid, Shape.T);
-        UpdateDraggableDictionary(orangeGrid, orangeDraggable);
+        orangeShape.SetData(new Color(1, 0.5f, 0, 1), orangeGrid, Shape.T);
+        UpdateDraggableDictionary(orangeGrid, orangeShape);
     }
 
     public void UpdateDraggableDictionary(Vector2Int targetGrid, Draggable draggable)
@@ -146,62 +140,58 @@ public class BoardController : MonoBehaviour
     {
         for (int i = 0; i < RedGrids.Length; i++)
         {
-            GameObject redCircle = PoolingSystem.Spawn(
-            Circle.gameObject,
-            CircleContainer.transform,
-            Circle.transform.localScale,
-            GridToWorld(RedGrids[i]),
-            Quaternion.identity);
+            Consumable redCircle = PoolingSystem.Spawn<Consumable>(
+                Circle.gameObject,
+                CircleContainer.transform,
+                Circle.transform.localScale,
+                GridToWorld(RedGrids[i]),
+                Quaternion.identity);
 
             redCircle.name = $"Red Circle {RedGrids[i]}";
-            Consumable redItem = redCircle.GetComponent<Consumable>();
-            redItem.SetData(new Color(1, 0.25f, 0.25f, 1));
-            ConsumableDictionary.Add(RedGrids[i], redItem);
+            redCircle.SetData(new Color(1, 0.25f, 0.25f, 1));
+            ConsumableDictionary.Add(RedGrids[i], redCircle);
         }
 
         for (int i = 0; i < YellowGrids.Length; i++)
         {
-            GameObject yellowCircle = PoolingSystem.Spawn(
-            Circle.gameObject,
-            CircleContainer.transform,
-            Circle.transform.localScale,
-            GridToWorld(YellowGrids[i]),
-            Quaternion.identity);
+            Consumable yellowCircle = PoolingSystem.Spawn<Consumable>(
+                Circle.gameObject,
+                CircleContainer.transform,
+                Circle.transform.localScale,
+                GridToWorld(YellowGrids[i]),
+                Quaternion.identity);
 
             yellowCircle.name = $"Yellow Circle {YellowGrids[i]}";
-            Consumable yellowItem = yellowCircle.GetComponent<Consumable>();
-            yellowItem.SetData(new Color(1, 0.75f, 0, 1));
-            ConsumableDictionary.Add(YellowGrids[i], yellowItem);
+            yellowCircle.SetData(new Color(1, 0.75f, 0, 1));
+            ConsumableDictionary.Add(YellowGrids[i], yellowCircle);
         }
 
         for (int i = 0; i < BlueGrids.Length; i++)
         {
-            GameObject blueCircle = PoolingSystem.Spawn(
-            Circle.gameObject,
-            CircleContainer.transform,
-            Circle.transform.localScale,
-            GridToWorld(BlueGrids[i]),
-            Quaternion.identity);
+            Consumable blueCircle = PoolingSystem.Spawn<Consumable>(
+                Circle.gameObject,
+                CircleContainer.transform,
+                Circle.transform.localScale,
+                GridToWorld(BlueGrids[i]),
+                Quaternion.identity);
 
             blueCircle.name = $"Blue Circle {BlueGrids[i]}";
-            Consumable blueItem = blueCircle.GetComponent<Consumable>();
-            blueItem.SetData(new Color(0, 0.5f, 1, 1));
-            ConsumableDictionary.Add(BlueGrids[i], blueItem);
+            blueCircle.SetData(new Color(0, 0.5f, 1, 1));
+            ConsumableDictionary.Add(BlueGrids[i], blueCircle);
         }
 
         for (int i = 0; i < OrangeGrids.Length; i++)
         {
-            GameObject orangeCircle = PoolingSystem.Spawn(
-            Circle.gameObject,
-            CircleContainer.transform,
-            Circle.transform.localScale,
-            GridToWorld(OrangeGrids[i]),
-            Quaternion.identity);
+            Consumable orangeCircle = PoolingSystem.Spawn<Consumable>(
+                Circle.gameObject,
+                CircleContainer.transform,
+                Circle.transform.localScale,
+                GridToWorld(OrangeGrids[i]),
+                Quaternion.identity);
 
             orangeCircle.name = $"Orange Circle {OrangeGrids[i]}";
-            Consumable orangeItem = orangeCircle.GetComponent<Consumable>();
-            orangeItem.SetData(new Color(1, 0.5f, 0, 1));
-            ConsumableDictionary.Add(OrangeGrids[i], orangeItem);
+            orangeCircle.SetData(new Color(1, 0.5f, 0, 1));
+            ConsumableDictionary.Add(OrangeGrids[i], orangeCircle);
         }
     }
     #endregion Generate Circle
@@ -262,15 +252,14 @@ public class BoardController : MonoBehaviour
 
     private void CreateShapeEffect()
     {
-        GameObject newEffect = PoolingSystem.Spawn(
+        Effect = PoolingSystem.Spawn<Draggable>(
             ShapeToDrag.gameObject,
             EffectContainer.transform,
             ShapeToDrag.transform.localScale,
             ShapeToDrag.transform.localPosition,
             Quaternion.identity);
 
-        Effect = newEffect.GetComponent<Draggable>();
-        EffectImages = newEffect.GetComponentsInChildren<Image>();
+        EffectImages = Effect.GetComponentsInChildren<Image>();
 
         for (int i = 0; i < EffectImages.Length; i++)
         {

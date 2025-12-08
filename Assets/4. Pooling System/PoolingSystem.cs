@@ -5,7 +5,8 @@ public static class PoolingSystem
 {
     private static Dictionary<int, Queue<GameObject>> PoolDictionary = new Dictionary<int, Queue<GameObject>>();
 
-    public static GameObject Spawn(GameObject prefab, Transform parent, Vector3 localScale, Vector3 localPosition, Quaternion localRotation)
+    public static T Spawn<T>(GameObject prefab, Transform parent, Vector3 localScale, Vector3 localPosition, Quaternion localRotation)
+        where T : Object
     {
         int id = prefab.GetInstanceID();
 
@@ -29,7 +30,7 @@ public static class PoolingSystem
         instance.transform.SetParent(parent);
         instance.transform.localScale = localScale;
         instance.transform.SetLocalPositionAndRotation(localPosition, localRotation);
-        return instance;
+        return instance.GetComponent<T>();
     }
 
     public static void Despawn(GameObject prefab, GameObject instance)

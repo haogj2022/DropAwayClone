@@ -40,13 +40,12 @@ public class JsonData
 {
     public int Column { get; set; }
     public int Row { get; set; }
-    //public Dictionary<Vector2Int, BoardTile> BoardTileDictionary { get; set; }
-    public Dictionary<Vector2Int, Color> BoardTile {  get; set; }
+    public Dictionary<Vector2Int, TileColor> TileColorDictionary { get; set; }
 
-    public JsonData(int column, int row, Dictionary<Vector2Int, Color> boardTileDictionary)
+    public JsonData(int column, int row, Dictionary<Vector2Int, TileColor> tileColorDictionary)
     {
         Column = column;
         Row = row;
-        BoardTile = boardTileDictionary;
+        TileColorDictionary = tileColorDictionary;
     }
 }
