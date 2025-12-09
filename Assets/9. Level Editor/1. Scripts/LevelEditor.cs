@@ -1,3 +1,4 @@
+using Newtonsoft.Json.Linq;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
@@ -7,24 +8,38 @@ public class LevelEditor : MonoBehaviour
 {
     [Header("Board")]
     [SerializeField] private BoardTile Tile;
+    [SerializeField] private Draggable Block;
+    [SerializeField] private Consumable Circle;
     [SerializeField] private RectTransform TileContainer;
+    [SerializeField] private RectTransform BlockContainer;
+    [SerializeField] private RectTransform CircleContainer;
     [SerializeField] private TMP_InputField WidthInput;
     [SerializeField] private TMP_InputField HeightInput;
     [SerializeField] private Button UpdateButton;
-    private float TileWidth, TileHeight;
+    private float TileWidth, TileHeight, GridOffset;
     private int BoardWidth, BoardHeight;
-    private float GridOffset;
     private Dictionary<Vector2Int, BoardTile> BoardTileDictionary = new Dictionary<Vector2Int, BoardTile>();
+    private Dictionary<Vector2Int, Draggable> DraggableDictionary = new Dictionary<Vector2Int, Draggable>();
+    private Dictionary<Vector2Int, Consumable> ConsumableDictionary = new Dictionary<Vector2Int, Consumable>();
 
-    [Header("Save/Load Level")]
-    [SerializeField] private TMP_InputField LevelName;
+    [Header("Level")]
+    [SerializeField] private TMP_InputField NameInput;
     [SerializeField] private Button SaveButton;
     [SerializeField] private Button LoadButton;
 
     [Header("Edit")]
     [SerializeField] private Toggle TileToggle;
     [SerializeField] private Toggle EmptyToggle;
+    [SerializeField] private Toggle CircleToggle;
+    [SerializeField] private Toggle DeleteShape;
+    [SerializeField] private TMP_Dropdown BlockDropdown;
     private bool CanEdit;
+    private bool CanPlaceShape;
+    private Shape CurrentShape = Shape.None;
+
+    [Header("Color")]
+    [SerializeField] private Toggle[] ColorToggles;
+    private ColorIndex CurrentColor = ColorIndex.White;
 
     private void Start()
     {
@@ -36,6 +51,12 @@ public class LevelEditor : MonoBehaviour
         UpdateButton.onClick.AddListener(UpdateGrid);
         SaveButton.onClick.AddListener(SaveLevel);
         LoadButton.onClick.AddListener(LoadLevel);
+        BlockDropdown.onValueChanged.AddListener(SelectShape);
+
+        EmptyToggle.onValueChanged.AddListener(SelectOption);
+        TileToggle.onValueChanged.AddListener(SelectOption);
+        CircleToggle.onValueChanged.AddListener(SelectOption);
+        DeleteShape.onValueChanged.AddListener(SelectOption);
     }
 
     private void OnDisable()
@@ -43,6 +64,35 @@ public class LevelEditor : MonoBehaviour
         UpdateButton.onClick.RemoveListener(UpdateGrid);
         SaveButton.onClick.RemoveListener(SaveLevel);
         LoadButton.onClick.RemoveListener(LoadLevel);
+        BlockDropdown.onValueChanged.RemoveListener(SelectShape);
+
+        EmptyToggle.onValueChanged.RemoveListener(SelectOption);
+        TileToggle.onValueChanged.RemoveListener(SelectOption);
+        CircleToggle.onValueChanged.RemoveListener(SelectOption);
+        DeleteShape.onValueChanged.RemoveListener(SelectOption);
+    }
+
+    private void SelectShape(int value)
+    {
+        if (value != 0)
+        {
+            EmptyToggle.isOn = false;
+            TileToggle.isOn = false;
+            CircleToggle.isOn = false;
+            DeleteShape.isOn = false;
+        }
+
+        BlockDropdown.value = value;
+        CurrentShape = (Shape)value;
+    }
+
+    private void SelectOption(bool isOn)
+    {
+        if (isOn)
+        {
+            BlockDropdown.value = 0;
+            CurrentShape = Shape.None;
+        }
     }
 
     private void SaveLevel()
@@ -51,19 +101,96 @@ public class LevelEditor : MonoBehaviour
         data.BoardWidth = BoardWidth;
         data.BoardHeight = BoardHeight;
 
-        JsonManager.SaveJson(data, LevelName.text);
+        foreach (var tile in BoardTileDictionary)
+        {
+            CellData cell = new CellData();
+            cell.Column = tile.Key.x;
+            cell.Row = tile.Key.y;
+
+            if (DraggableDictionary.ContainsKey(tile.Key))
+            {
+                cell.HasBlock = true;
+                cell.BlockColor = DraggableDictionary[tile.Key].GetColorIndex();
+                cell.BlockShape = DraggableDictionary[tile.Key].GetShape();
+            }
+
+            if (ConsumableDictionary.ContainsKey(tile.Key))
+            {
+                cell.HasCircle = true;
+                cell.BlockColor = ConsumableDictionary[tile.Key].GetColorIndex();
+            }
+
+            data.BoardTiles.Add(cell);
+        }
+
+        JsonManager.SaveJson(data, NameInput.text);
     }
 
     private void LoadLevel()
     {
-        JsonData data = JsonManager.LoadJson(LevelName.text);
+        JsonData data = JsonManager.LoadJson(NameInput.text);
 
-        if (data != null)
+        if (data == null)
         {
-            WidthInput.text = data.BoardWidth.ToString();
-            HeightInput.text = data.BoardHeight.ToString();
-            UpdateGrid();
+            return;
         }
+
+        ClearGrid();
+        BoardWidth = data.BoardWidth;
+        BoardHeight = data.BoardHeight;
+        WidthInput.text = BoardWidth.ToString();
+        HeightInput.text = BoardHeight.ToString();
+
+        for (int i = 0; i < data.BoardTiles.Count; i++)
+        {
+            Vector2Int newGrid = new Vector2Int(data.BoardTiles[i].Column, data.BoardTiles[i].Row);
+            CreateBoardTile(newGrid);
+
+            if (data.BoardTiles[i].HasBlock)
+            {
+                CurrentColor = data.BoardTiles[i].BlockColor;
+                CurrentShape = data.BoardTiles[i].BlockShape;
+                CreateShape(newGrid, CurrentColor, CurrentShape);
+            }
+
+            if (data.BoardTiles[i].HasCircle)
+            {
+                CurrentColor = data.BoardTiles[i].CircleColor;
+                CreateCircle(newGrid, CurrentColor);
+            }
+        }
+    }
+
+    private void CreateShape(Vector2Int newGrid, ColorIndex currentColor, Shape currentShape)
+    {
+        Draggable newBlock = PoolingSystem.Spawn<Draggable>(
+            Block.gameObject,
+            BlockContainer.transform,
+            Block.transform.localScale,
+            GridToWorld(newGrid),
+            Quaternion.identity);
+
+        newBlock.name = $"{CurrentColor} {CurrentShape}";
+        newBlock.SetData(currentColor, newGrid, currentShape);
+
+        for (int i = 0; i < newBlock.ShapeGrid.Length; i++)
+        {
+            DraggableDictionary.Add(newGrid + newBlock.ShapeGrid[i], newBlock);
+        }
+    }
+
+    private void CreateCircle(Vector2Int newGrid, ColorIndex selectedColor)
+    {
+        Consumable newCircle = PoolingSystem.Spawn<Consumable>(
+            Circle.gameObject,
+            CircleContainer.transform,
+            Circle.transform.localScale,
+            GridToWorld(newGrid),
+            Quaternion.identity);
+
+        newCircle.name = $"Circle {newGrid}";
+        newCircle.SetData(selectedColor);
+        ConsumableDictionary.Add(newGrid, newCircle);
     }
 
     private void UpdateGrid()
@@ -79,41 +206,53 @@ public class LevelEditor : MonoBehaviour
         }
 
         ClearGrid();
-        CreateGrid();
+        CreateNewGrid();
     }
 
     private void ClearGrid()
     {
-        if (BoardTileDictionary.Count > 0)
+        foreach (var boardTile in BoardTileDictionary.Values)
         {
-            foreach (var boardTile in BoardTileDictionary.Values)
-            {
-                PoolingSystem.Despawn(Tile.gameObject, boardTile.gameObject);
-            }
-            BoardTileDictionary.Clear();
+            PoolingSystem.Despawn(Tile.gameObject, boardTile.gameObject);
         }
+        BoardTileDictionary.Clear();
+
+        foreach (var draggable in DraggableDictionary.Values)
+        {
+            PoolingSystem.Despawn(Block.gameObject, draggable.gameObject);
+        }
+        DraggableDictionary.Clear();
+
+        foreach (var consumable in ConsumableDictionary.Values)
+        {
+            PoolingSystem.Despawn(Circle.gameObject, consumable.gameObject);
+        }
+        ConsumableDictionary.Clear();
     }
 
-    private void CreateGrid()
+    private void CreateNewGrid()
     {
         for (int i = 0; i < BoardWidth; i++)
         {
             for (int j = 0; j < BoardHeight; j++)
             {
-                Vector2Int newGrid = new Vector2Int(i, j);
-
-                BoardTile newTile = PoolingSystem.Spawn<BoardTile>(
-                    Tile.gameObject,
-                    TileContainer.transform,
-                    Tile.transform.localScale,
-                    GridToWorld(newGrid),
-                    Quaternion.identity);
-
-                newTile.name = $"Tile {newGrid}";
-                newTile.SetData(TileColor.Black);
-                BoardTileDictionary.Add(newGrid, newTile);
+                CreateBoardTile(new Vector2Int(i, j));
             }
         }
+    }
+
+    private void CreateBoardTile(Vector2Int newGrid)
+    {
+        BoardTile newTile = PoolingSystem.Spawn<BoardTile>(
+            Tile.gameObject,
+            TileContainer.transform,
+            Tile.transform.localScale,
+            GridToWorld(newGrid),
+            Quaternion.identity);
+
+        newTile.name = $"Tile {newGrid}";
+        newTile.SetData(ColorIndex.Black);
+        BoardTileDictionary.Add(newGrid, newTile);
     }
 
     private void Update()
@@ -131,7 +270,7 @@ public class LevelEditor : MonoBehaviour
             CanEdit = true;
         }
 
-        if (Input.GetMouseButton(0) && CanEdit)
+        if (Input.GetMouseButtonDown(0) && CanEdit)
         {
             StartEdit(mousePos);
         }
@@ -153,20 +292,87 @@ public class LevelEditor : MonoBehaviour
         {
             PoolingSystem.Despawn(Tile.gameObject, visibleTile.gameObject);
             BoardTileDictionary.Remove(mouseGrid);
+            RemoveShape(mouseGrid);
         }
 
         if (TileToggle.isOn && BoardTileDictionary.ContainsKey(mouseGrid) == false)
         {
-            BoardTile newTile = PoolingSystem.Spawn<BoardTile>(
-                Tile.gameObject,
-                TileContainer.transform,
-                Tile.transform.localScale,
-                GridToWorld(mouseGrid),
-                Quaternion.identity);
+            CreateBoardTile(mouseGrid);
+        }
 
-            newTile.name = $"Tile {mouseGrid}";
-            newTile.SetData(TileColor.Black);
-            BoardTileDictionary.Add(mouseGrid, newTile);
+        if (DeleteShape.isOn)
+        {
+            RemoveShape(mouseGrid);
+        }
+
+        if (BoardTileDictionary.ContainsKey(mouseGrid) &&
+            DraggableDictionary.ContainsKey(mouseGrid) == false &&
+            ConsumableDictionary.ContainsKey(mouseGrid) == false)
+        {
+            SelectColor();
+
+            if (CircleToggle.isOn && CurrentColor != ColorIndex.White)
+            {
+                CreateCircle(mouseGrid, CurrentColor);
+            }
+        }
+
+        if (BlockDropdown.value != 0 && CurrentColor != ColorIndex.White && CurrentShape != Shape.None)
+        {
+            SelectColor();
+            SelectShape(BlockDropdown.value);
+            CanPlaceShape = true;
+
+            Vector2Int[] shapeGrid = Data.Cells[CurrentShape];
+
+            for (int i = 0; i < shapeGrid.Length; i++)
+            {
+                if (BoardTileDictionary.ContainsKey(mouseGrid + shapeGrid[i]) == false ||
+                    DraggableDictionary.ContainsKey(mouseGrid + shapeGrid[i]) ||
+                    ConsumableDictionary.ContainsKey(mouseGrid + shapeGrid[i]))
+                {
+                    CanPlaceShape = false;
+                    break;
+                }
+            }
+
+            if (CanPlaceShape)
+            {
+                Debug.Log("create shape");
+                CreateShape(mouseGrid, CurrentColor, CurrentShape);
+            }
+        }
+    }
+
+    private void SelectColor()
+    {
+        for (int i = 0; i < ColorToggles.Length; i++)
+        {
+            if (ColorToggles[i].isOn)
+            {
+                CurrentColor = (ColorIndex)i;
+                return;
+            }
+        }
+        CurrentColor = ColorIndex.White;
+    }
+
+    private void RemoveShape(Vector2Int newGrid)
+    {
+        if (DraggableDictionary.TryGetValue(newGrid, out var visibleBlock))
+        {
+            PoolingSystem.Despawn(Block.gameObject, visibleBlock.gameObject);
+
+            for (int i = 0; i < visibleBlock.ShapeGrid.Length; i++)
+            {
+                DraggableDictionary.Remove(visibleBlock.StartGrid + visibleBlock.ShapeGrid[i]);
+            }
+        }
+
+        if (ConsumableDictionary.TryGetValue(newGrid, out var visibleCircle))
+        {
+            PoolingSystem.Despawn(Circle.gameObject, visibleCircle.gameObject);
+            ConsumableDictionary.Remove(newGrid);
         }
     }
 

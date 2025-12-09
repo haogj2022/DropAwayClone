@@ -40,4 +40,32 @@ public class JsonData
 {
     public int BoardWidth;
     public int BoardHeight;
+    public List<CellData> BoardTiles = new List<CellData>();
+}
+
+public class CellData
+{
+    public int Column;
+    public int Row;
+    public bool HasBlock;
+    public bool HasCircle;
+    public ColorIndex BlockColor;
+    public Shape BlockShape;
+    public ColorIndex CircleColor;
+}
+
+public enum ColorIndex
+{
+    Red,
+    Orange,
+    Yellow,
+    Green,
+    Blue,
+    Purple,
+    Pink,
+    LightBlue,
+    Cyan,
+    Lime,
+    Black,
+    White
 }

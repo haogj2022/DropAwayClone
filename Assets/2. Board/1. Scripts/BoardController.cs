@@ -37,7 +37,7 @@ public class BoardController : MonoBehaviour
                     Quaternion.identity);
 
                 boardTile.name = $"Tile {newGrid}";
-                boardTile.SetData(TileColor.Black);
+                boardTile.SetData(ColorIndex.Black);
                 BoardTileDictionary.Add(newGrid, boardTile);
             }
         }
@@ -59,8 +59,12 @@ public class BoardController : MonoBehaviour
             Quaternion.identity);
 
         redShape.name = $"Red Shape";
-        redShape.SetData(new Color(1, 0.25f, 0.25f, 1), redGrid, Shape.L);
-        UpdateDraggableDictionary(redGrid, redShape);
+        redShape.SetData(ColorIndex.Red, redGrid, Shape.L);
+
+        for (int i = 0; i < redShape.ShapeGrid.Length; i++)
+        {
+            UpdateDraggableDictionary(redShape.StartGrid + redShape.ShapeGrid[i], redShape);
+        }
 
         Vector2Int yellowGrid = new Vector2Int(2, 2);
         Draggable yellowShape = PoolingSystem.Spawn<Draggable>(
@@ -71,8 +75,12 @@ public class BoardController : MonoBehaviour
             Quaternion.identity);
 
         yellowShape.name = $"Yellow Shape";
-        yellowShape.SetData(new Color(1, 0.75f, 0, 1), yellowGrid, Shape.Cross);
-        UpdateDraggableDictionary(yellowGrid, yellowShape);
+        yellowShape.SetData(ColorIndex.Yellow, yellowGrid, Shape.Cross);
+
+        for (int i = 0; i < yellowShape.ShapeGrid.Length; i++)
+        {
+            UpdateDraggableDictionary(yellowShape.StartGrid + yellowShape.ShapeGrid[i], yellowShape);
+        }
 
         Vector2Int blueGrid = new Vector2Int(0, 3);
         Draggable blueShape = PoolingSystem.Spawn<Draggable>(
@@ -83,8 +91,12 @@ public class BoardController : MonoBehaviour
             Quaternion.identity);
 
         blueShape.name = $"Blue Shape";
-        blueShape.SetData(new Color(0, 0.5f, 1, 1), blueGrid, Shape.O);
-        UpdateDraggableDictionary(blueGrid, blueShape);
+        blueShape.SetData(ColorIndex.Blue, blueGrid, Shape.O);
+
+        for (int i = 0; i < blueShape.ShapeGrid.Length; i++)
+        {
+            UpdateDraggableDictionary(blueShape.StartGrid + blueShape.ShapeGrid[i], blueShape);
+        }
 
         Vector2Int orangeGrid = new Vector2Int(2, 5);
         Draggable orangeShape = PoolingSystem.Spawn<Draggable>(
@@ -95,8 +107,12 @@ public class BoardController : MonoBehaviour
             Quaternion.identity);
 
         orangeShape.name = $"Orange Shape";
-        orangeShape.SetData(new Color(1, 0.5f, 0, 1), orangeGrid, Shape.T);
-        UpdateDraggableDictionary(orangeGrid, orangeShape);
+        orangeShape.SetData(ColorIndex.Orange, orangeGrid, Shape.T);
+
+        for (int i = 0; i < orangeShape.ShapeGrid.Length; i++)
+        {
+            UpdateDraggableDictionary(orangeShape.StartGrid + orangeShape.ShapeGrid[i], orangeShape);
+        }
     }
 
     public void UpdateDraggableDictionary(Vector2Int targetGrid, Draggable draggable)
@@ -148,7 +164,7 @@ public class BoardController : MonoBehaviour
                 Quaternion.identity);
 
             redCircle.name = $"Red Circle {RedGrids[i]}";
-            redCircle.SetData(new Color(1, 0.25f, 0.25f, 1));
+            redCircle.SetData(ColorIndex.Red);
             ConsumableDictionary.Add(RedGrids[i], redCircle);
         }
 
@@ -162,7 +178,7 @@ public class BoardController : MonoBehaviour
                 Quaternion.identity);
 
             yellowCircle.name = $"Yellow Circle {YellowGrids[i]}";
-            yellowCircle.SetData(new Color(1, 0.75f, 0, 1));
+            yellowCircle.SetData(ColorIndex.Yellow);
             ConsumableDictionary.Add(YellowGrids[i], yellowCircle);
         }
 
@@ -176,7 +192,7 @@ public class BoardController : MonoBehaviour
                 Quaternion.identity);
 
             blueCircle.name = $"Blue Circle {BlueGrids[i]}";
-            blueCircle.SetData(new Color(0, 0.5f, 1, 1));
+            blueCircle.SetData(ColorIndex.Blue);
             ConsumableDictionary.Add(BlueGrids[i], blueCircle);
         }
 
@@ -190,7 +206,7 @@ public class BoardController : MonoBehaviour
                 Quaternion.identity);
 
             orangeCircle.name = $"Orange Circle {OrangeGrids[i]}";
-            orangeCircle.SetData(new Color(1, 0.5f, 0, 1));
+            orangeCircle.SetData(ColorIndex.Orange);
             ConsumableDictionary.Add(OrangeGrids[i], orangeCircle);
         }
     }
@@ -326,7 +342,7 @@ public class BoardController : MonoBehaviour
 
             if (ConsumableDictionary.TryGetValue(newGrid, out var consumable))
             {
-                if (ShapeToDrag.GetColor() != consumable.GetColor())
+                if (ShapeToDrag.GetColorIndex() != consumable.GetColorIndex())
                 {
                     return previousGrid;
                 }
