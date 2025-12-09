@@ -9587,7 +9587,6 @@ MonoBehaviour:
   EmptyToggle: {fileID: 7608980747520159243}
   CircleToggle: {fileID: 5404060608820419794}
   DeleteShape: {fileID: 3381220678293097280}
-  EditToggleGroup: {fileID: 7964570017103410888}
   BlockDropdown: {fileID: 5067550787536709433}
   ColorToggles:
   - {fileID: 6179099091688890385}

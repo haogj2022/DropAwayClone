@@ -109,12 +109,6 @@ public class Draggable : MonoBehaviour
     {
         for (int i = 0; i < ShapeGrid.Length; i++)
         {
-            if (ShapeGrid[i] == new Vector2Int(0, 0))
-            {
-                BaseImage.name = $"Block {StartGrid}";
-                ShapeImages.Add(BaseImage);
-            }
-
             if (ShapeGrid[i] != new Vector2Int(0, 0))
             {
                 Image newBlock = PoolingSystem.Spawn<Image>(
@@ -129,10 +123,22 @@ public class Draggable : MonoBehaviour
                 ShapeImages.Add(newBlock);
             }
 
+            if (ShapeGrid[i] == new Vector2Int(0, 0))
+            {
+                BaseImage.name = $"Block {StartGrid}";
+                ShapeImages.Add(BaseImage);
+            }
+
             if (ShapeGrid[i] == TextGrid)
             {
                 ShapeText = ShapeImages[i].GetComponentInChildren<TMP_Text>();
                 ShapeText.text = $"{GridCount}";
+            }
+
+            if (ShapeGrid[i] != TextGrid)
+            {
+                ShapeText = ShapeImages[i].GetComponentInChildren<TMP_Text>();
+                ShapeText.text = string.Empty;
             }
         }
     }

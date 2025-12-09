@@ -9,7 +9,7 @@ public static class Data
         { Shape.Cross,                   new Vector2Int[] { new( 0, 1), new(-1, 0), new( 0, 0), new( 1, 0), new( 0,-1) } },
         { Shape.I,                       new Vector2Int[] { new( 0, 1), new( 0, 0), new( 0,-1)                         } },
         { Shape.I_Rotate_90,             new Vector2Int[] { new(-1, 0), new( 0, 0), new( 1, 0)                         } },
-        { Shape.J,                       new Vector2Int[] { new( 0, 2), new( 0, 1), new( 0, 0), new( 0, 0)             } },
+        { Shape.J,                       new Vector2Int[] { new( 0, 2), new( 0, 1), new(-1, 0), new( 0, 0)             } },
         { Shape.J_Rotate_180,            new Vector2Int[] { new( 0, 0), new( 1, 0), new( 0,-1), new( 0,-2)             } },
         { Shape.J_Rotate_90_Left,        new Vector2Int[] { new(-2, 0), new(-1, 0), new( 0, 0), new( 0,-1)             } },
         { Shape.J_Rotate_90_Right,       new Vector2Int[] { new( 0, 1), new( 0, 0), new( 1, 0), new( 2, 0)             } },

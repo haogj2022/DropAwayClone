@@ -53,10 +53,10 @@ public class LevelEditor : MonoBehaviour
         LoadButton.onClick.AddListener(LoadLevel);
         BlockDropdown.onValueChanged.AddListener(SelectShape);
 
-        EmptyToggle.onValueChanged.AddListener(SelectOption);
-        TileToggle.onValueChanged.AddListener(SelectOption);
-        CircleToggle.onValueChanged.AddListener(SelectOption);
-        DeleteShape.onValueChanged.AddListener(SelectOption);
+        EmptyToggle.onValueChanged.AddListener(ResetDropdown);
+        TileToggle.onValueChanged.AddListener(ResetDropdown);
+        CircleToggle.onValueChanged.AddListener(ResetDropdown);
+        DeleteShape.onValueChanged.AddListener(ResetDropdown);
     }
 
     private void OnDisable()
@@ -66,10 +66,10 @@ public class LevelEditor : MonoBehaviour
         LoadButton.onClick.RemoveListener(LoadLevel);
         BlockDropdown.onValueChanged.RemoveListener(SelectShape);
 
-        EmptyToggle.onValueChanged.RemoveListener(SelectOption);
-        TileToggle.onValueChanged.RemoveListener(SelectOption);
-        CircleToggle.onValueChanged.RemoveListener(SelectOption);
-        DeleteShape.onValueChanged.RemoveListener(SelectOption);
+        EmptyToggle.onValueChanged.RemoveListener(ResetDropdown);
+        TileToggle.onValueChanged.RemoveListener(ResetDropdown);
+        CircleToggle.onValueChanged.RemoveListener(ResetDropdown);
+        DeleteShape.onValueChanged.RemoveListener(ResetDropdown);
     }
 
     private void SelectShape(int value)
@@ -86,9 +86,9 @@ public class LevelEditor : MonoBehaviour
         CurrentShape = (Shape)value;
     }
 
-    private void SelectOption(bool isOn)
+    private void ResetDropdown(bool isToggleOn)
     {
-        if (isOn)
+        if (isToggleOn)
         {
             BlockDropdown.value = 0;
             CurrentShape = Shape.None;
@@ -107,7 +107,7 @@ public class LevelEditor : MonoBehaviour
             cell.Column = tile.Key.x;
             cell.Row = tile.Key.y;
 
-            if (DraggableDictionary.ContainsKey(tile.Key))
+            if (DraggableDictionary.ContainsKey(tile.Key) && DraggableDictionary[tile.Key].StartGrid == tile.Key)
             {
                 cell.HasBlock = true;
                 cell.BlockColor = DraggableDictionary[tile.Key].GetColorIndex();
@@ -117,7 +117,7 @@ public class LevelEditor : MonoBehaviour
             if (ConsumableDictionary.ContainsKey(tile.Key))
             {
                 cell.HasCircle = true;
-                cell.BlockColor = ConsumableDictionary[tile.Key].GetColorIndex();
+                cell.CircleColor = ConsumableDictionary[tile.Key].GetColorIndex();
             }
 
             data.BoardTiles.Add(cell);
@@ -148,15 +148,12 @@ public class LevelEditor : MonoBehaviour
 
             if (data.BoardTiles[i].HasBlock)
             {
-                CurrentColor = data.BoardTiles[i].BlockColor;
-                CurrentShape = data.BoardTiles[i].BlockShape;
-                CreateShape(newGrid, CurrentColor, CurrentShape);
+                CreateShape(newGrid, data.BoardTiles[i].BlockColor, data.BoardTiles[i].BlockShape);
             }
 
             if (data.BoardTiles[i].HasCircle)
             {
-                CurrentColor = data.BoardTiles[i].CircleColor;
-                CreateCircle(newGrid, CurrentColor);
+                CreateCircle(newGrid, data.BoardTiles[i].CircleColor);
             }
         }
     }
@@ -170,16 +167,16 @@ public class LevelEditor : MonoBehaviour
             GridToWorld(newGrid),
             Quaternion.identity);
 
-        newBlock.name = $"{CurrentColor} {CurrentShape}";
+        newBlock.name = $"{currentColor} {currentShape}";
         newBlock.SetData(currentColor, newGrid, currentShape);
 
         for (int i = 0; i < newBlock.ShapeGrid.Length; i++)
         {
-            DraggableDictionary.Add(newGrid + newBlock.ShapeGrid[i], newBlock);
+            DraggableDictionary.Add(newBlock.StartGrid + newBlock.ShapeGrid[i], newBlock);
         }
     }
 
-    private void CreateCircle(Vector2Int newGrid, ColorIndex selectedColor)
+    private void CreateCircle(Vector2Int newGrid, ColorIndex currentColor)
     {
         Consumable newCircle = PoolingSystem.Spawn<Consumable>(
             Circle.gameObject,
@@ -188,8 +185,8 @@ public class LevelEditor : MonoBehaviour
             GridToWorld(newGrid),
             Quaternion.identity);
 
-        newCircle.name = $"Circle {newGrid}";
-        newCircle.SetData(selectedColor);
+        newCircle.name = $"{currentColor} Circle {newGrid}";
+        newCircle.SetData(currentColor);
         ConsumableDictionary.Add(newGrid, newCircle);
     }
 
@@ -270,7 +267,7 @@ public class LevelEditor : MonoBehaviour
             CanEdit = true;
         }
 
-        if (Input.GetMouseButtonDown(0) && CanEdit)
+        if (Input.GetMouseButton(0) && CanEdit)
         {
             StartEdit(mousePos);
         }
@@ -305,12 +302,12 @@ public class LevelEditor : MonoBehaviour
             RemoveShape(mouseGrid);
         }
 
+        SelectColor();
+
         if (BoardTileDictionary.ContainsKey(mouseGrid) &&
             DraggableDictionary.ContainsKey(mouseGrid) == false &&
             ConsumableDictionary.ContainsKey(mouseGrid) == false)
         {
-            SelectColor();
-
             if (CircleToggle.isOn && CurrentColor != ColorIndex.White)
             {
                 CreateCircle(mouseGrid, CurrentColor);
@@ -319,8 +316,6 @@ public class LevelEditor : MonoBehaviour
 
         if (BlockDropdown.value != 0 && CurrentColor != ColorIndex.White && CurrentShape != Shape.None)
         {
-            SelectColor();
-            SelectShape(BlockDropdown.value);
             CanPlaceShape = true;
 
             Vector2Int[] shapeGrid = Data.Cells[CurrentShape];
@@ -338,7 +333,6 @@ public class LevelEditor : MonoBehaviour
 
             if (CanPlaceShape)
             {
-                Debug.Log("create shape");
                 CreateShape(mouseGrid, CurrentColor, CurrentShape);
             }
         }
@@ -351,10 +345,14 @@ public class LevelEditor : MonoBehaviour
             if (ColorToggles[i].isOn)
             {
                 CurrentColor = (ColorIndex)i;
-                return;
+                break;
+            }
+
+            if (ColorToggles[i].isOn == false && i == ColorToggles.Length)
+            {
+                CurrentColor = ColorIndex.White;
             }
         }
-        CurrentColor = ColorIndex.White;
     }
 
     private void RemoveShape(Vector2Int newGrid)
