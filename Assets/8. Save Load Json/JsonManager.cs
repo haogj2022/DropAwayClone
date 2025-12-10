@@ -63,7 +63,7 @@ public enum ColorIndex
     Blue,
     Purple,
     Pink,
-    LightBlue,
+    Light_Blue,
     Cyan,
     Lime,
     Black,

@@ -34,7 +34,7 @@ public class Consumable : MonoBehaviour
             case ColorIndex.Pink:
                 CircleImage.color = new Color(1, 0.5f, 1, 1);
                 break;
-            case ColorIndex.LightBlue:
+            case ColorIndex.Light_Blue:
                 CircleImage.color = new Color(0, 0.75f, 1, 1);
                 break;
             case ColorIndex.Cyan:

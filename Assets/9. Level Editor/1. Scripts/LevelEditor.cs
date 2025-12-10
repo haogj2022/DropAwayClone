@@ -318,7 +318,7 @@ public class LevelEditor : MonoBehaviour
         {
             CanPlaceShape = true;
 
-            Vector2Int[] shapeGrid = Data.Cells[CurrentShape];
+            Vector2Int[] shapeGrid = ShapeData.Cells[CurrentShape];
 
             for (int i = 0; i < shapeGrid.Length; i++)
             {

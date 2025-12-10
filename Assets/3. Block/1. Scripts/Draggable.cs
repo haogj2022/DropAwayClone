@@ -25,8 +25,8 @@ public class Draggable : MonoBehaviour
         CurrentShape = currentShape;
         ImageWidth = BaseImage.rectTransform.rect.width;
         ImageHeight = BaseImage.rectTransform.rect.height;
-        ShapeGrid = Data.Cells[CurrentShape];
-        TextGrid = Data.TextOffset[CurrentShape];
+        ShapeGrid = ShapeData.Cells[CurrentShape];
+        TextGrid = ShapeData.TextOffset[CurrentShape];
         GridCount = ShapeGrid.Length;
         ClearShape();
         CreateNewShape();
@@ -59,7 +59,7 @@ public class Draggable : MonoBehaviour
             case ColorIndex.Pink:
                 BaseImage.color = new Color(1, 0.5f, 1, 1);
                 break;
-            case ColorIndex.LightBlue:
+            case ColorIndex.Light_Blue:
                 BaseImage.color = new Color(0, 0.75f, 1, 1);
                 break;
             case ColorIndex.Cyan:
