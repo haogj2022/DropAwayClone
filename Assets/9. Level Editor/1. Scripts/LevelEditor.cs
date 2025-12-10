@@ -6,41 +6,11 @@ using UnityEngine.UI;
 
 public class LevelEditor : MonoBehaviour
 {
-    [Header("Board")]
-    [SerializeField] private BoardTile Tile;
-    [SerializeField] private Draggable Block;
-    [SerializeField] private Consumable Circle;
-    [SerializeField] private RectTransform TileContainer;
-    [SerializeField] private RectTransform BlockContainer;
-    [SerializeField] private RectTransform CircleContainer;
-    [SerializeField] private TMP_InputField WidthInput;
-    [SerializeField] private TMP_InputField HeightInput;
-    [SerializeField] private Button UpdateButton;
-    private float TileWidth, TileHeight, GridOffset;
-    private int BoardWidth, BoardHeight;
     private Dictionary<Vector2Int, BoardTile> BoardTileDictionary = new Dictionary<Vector2Int, BoardTile>();
     private Dictionary<Vector2Int, Draggable> DraggableDictionary = new Dictionary<Vector2Int, Draggable>();
     private Dictionary<Vector2Int, Consumable> ConsumableDictionary = new Dictionary<Vector2Int, Consumable>();
 
-    [Header("Level")]
-    [SerializeField] private TMP_InputField NameInput;
-    [SerializeField] private Button SaveButton;
-    [SerializeField] private Button LoadButton;
-
-    [Header("Edit")]
-    [SerializeField] private Toggle TileToggle;
-    [SerializeField] private Toggle EmptyToggle;
-    [SerializeField] private Toggle CircleToggle;
-    [SerializeField] private Toggle DeleteShape;
-    [SerializeField] private TMP_Dropdown BlockDropdown;
-    private bool CanEdit;
-    private bool CanPlaceShape;
-    private Shape CurrentShape = Shape.None;
-
-    [Header("Color")]
-    [SerializeField] private Toggle[] ColorToggles;
-    private ColorIndex CurrentColor = ColorIndex.White;
-
+    #region Handle Event
     private void Start()
     {
         RectTransform tileSize = Tile.GetComponent<RectTransform>();
@@ -71,29 +41,90 @@ public class LevelEditor : MonoBehaviour
         CircleToggle.onValueChanged.RemoveListener(ResetDropdown);
         DeleteShape.onValueChanged.RemoveListener(ResetDropdown);
     }
+    #endregion Handle Event
 
-    private void SelectShape(int value)
+    #region Generate Grid Board
+    [Header("Board")]
+    [SerializeField] private BoardTile Tile;
+    [SerializeField] private Draggable Block;
+    [SerializeField] private Consumable Circle;
+    [SerializeField] private RectTransform TileContainer;
+    [SerializeField] private RectTransform BlockContainer;
+    [SerializeField] private RectTransform CircleContainer;
+    [SerializeField] private TMP_InputField WidthInput;
+    [SerializeField] private TMP_InputField HeightInput;
+    [SerializeField] private Button UpdateButton;
+    private float TileWidth, TileHeight, GridOffset;
+    private int BoardWidth, BoardHeight;
+
+    private void UpdateGrid()
     {
-        if (value != 0)
+        if (int.TryParse(WidthInput.text, out int width) && width > 0)
         {
-            EmptyToggle.isOn = false;
-            TileToggle.isOn = false;
-            CircleToggle.isOn = false;
-            DeleteShape.isOn = false;
+            BoardWidth = width;
         }
 
-        BlockDropdown.value = value;
-        CurrentShape = (Shape)value;
+        if (int.TryParse(HeightInput.text, out int height) && height > 0)
+        {
+            BoardHeight = height;
+        }
+
+        ClearGrid();
+        CreateNewGrid();
     }
 
-    private void ResetDropdown(bool isToggleOn)
+    private void ClearGrid()
     {
-        if (isToggleOn)
+        foreach (var boardTile in BoardTileDictionary.Values)
         {
-            BlockDropdown.value = 0;
-            CurrentShape = Shape.None;
+            PoolingSystem.Despawn(Tile.gameObject, boardTile.gameObject);
+        }
+        BoardTileDictionary.Clear();
+
+        foreach (var draggable in DraggableDictionary.Values)
+        {
+            PoolingSystem.Despawn(Block.gameObject, draggable.gameObject);
+        }
+        DraggableDictionary.Clear();
+
+        foreach (var consumable in ConsumableDictionary.Values)
+        {
+            PoolingSystem.Despawn(Circle.gameObject, consumable.gameObject);
+        }
+        ConsumableDictionary.Clear();
+    }
+
+    private void CreateNewGrid()
+    {
+        for (int i = 0; i < BoardWidth; i++)
+        {
+            for (int j = 0; j < BoardHeight; j++)
+            {
+                CreateBoardTile(new Vector2Int(i, j));
+            }
         }
     }
+
+    private void CreateBoardTile(Vector2Int newGrid)
+    {
+        BoardTile newTile = PoolingSystem.Spawn<BoardTile>(
+            Tile.gameObject,
+            TileContainer.transform,
+            Tile.transform.localScale,
+            GridToWorld(newGrid),
+            Quaternion.identity);
+
+        newTile.name = $"Tile {newGrid}";
+        newTile.SetData(ColorIndex.Black);
+        BoardTileDictionary.Add(newGrid, newTile);
+    }
+    #endregion Generate Grid Board
+
+    #region Save And Load Level
+    [Header("Level")]
+    [SerializeField] private TMP_InputField NameInput;
+    [SerializeField] private Button SaveButton;
+    [SerializeField] private Button LoadButton;
 
     private void SaveLevel()
     {
@@ -157,100 +188,22 @@ public class LevelEditor : MonoBehaviour
             }
         }
     }
+    #endregion Save And Load Level
 
-    private void CreateShape(Vector2Int newGrid, ColorIndex currentColor, Shape currentShape)
-    {
-        Draggable newBlock = PoolingSystem.Spawn<Draggable>(
-            Block.gameObject,
-            BlockContainer.transform,
-            Block.transform.localScale,
-            GridToWorld(newGrid),
-            Quaternion.identity);
+    #region Select Edit Option
+    [Header("Edit")]
+    [SerializeField] private Toggle TileToggle;
+    [SerializeField] private Toggle EmptyToggle;
+    [SerializeField] private Toggle CircleToggle;
+    [SerializeField] private Toggle DeleteShape;
+    [SerializeField] private TMP_Dropdown BlockDropdown;
+    private bool CanEdit;
+    private bool CanPlaceShape;
+    private Shape CurrentShape = Shape.None;
 
-        newBlock.name = $"{currentColor} {currentShape}";
-        newBlock.SetData(currentColor, newGrid, currentShape);
-
-        for (int i = 0; i < newBlock.ShapeGrid.Length; i++)
-        {
-            DraggableDictionary.Add(newBlock.StartGrid + newBlock.ShapeGrid[i], newBlock);
-        }
-    }
-
-    private void CreateCircle(Vector2Int newGrid, ColorIndex currentColor)
-    {
-        Consumable newCircle = PoolingSystem.Spawn<Consumable>(
-            Circle.gameObject,
-            CircleContainer.transform,
-            Circle.transform.localScale,
-            GridToWorld(newGrid),
-            Quaternion.identity);
-
-        newCircle.name = $"{currentColor} Circle {newGrid}";
-        newCircle.SetData(currentColor);
-        ConsumableDictionary.Add(newGrid, newCircle);
-    }
-
-    private void UpdateGrid()
-    {
-        if (int.TryParse(WidthInput.text, out int width) && width > 0)
-        {
-            BoardWidth = width;
-        }
-
-        if (int.TryParse(HeightInput.text, out int height) && height > 0)
-        {
-            BoardHeight = height;
-        }
-
-        ClearGrid();
-        CreateNewGrid();
-    }
-
-    private void ClearGrid()
-    {
-        foreach (var boardTile in BoardTileDictionary.Values)
-        {
-            PoolingSystem.Despawn(Tile.gameObject, boardTile.gameObject);
-        }
-        BoardTileDictionary.Clear();
-
-        foreach (var draggable in DraggableDictionary.Values)
-        {
-            PoolingSystem.Despawn(Block.gameObject, draggable.gameObject);
-        }
-        DraggableDictionary.Clear();
-
-        foreach (var consumable in ConsumableDictionary.Values)
-        {
-            PoolingSystem.Despawn(Circle.gameObject, consumable.gameObject);
-        }
-        ConsumableDictionary.Clear();
-    }
-
-    private void CreateNewGrid()
-    {
-        for (int i = 0; i < BoardWidth; i++)
-        {
-            for (int j = 0; j < BoardHeight; j++)
-            {
-                CreateBoardTile(new Vector2Int(i, j));
-            }
-        }
-    }
-
-    private void CreateBoardTile(Vector2Int newGrid)
-    {
-        BoardTile newTile = PoolingSystem.Spawn<BoardTile>(
-            Tile.gameObject,
-            TileContainer.transform,
-            Tile.transform.localScale,
-            GridToWorld(newGrid),
-            Quaternion.identity);
-
-        newTile.name = $"Tile {newGrid}";
-        newTile.SetData(ColorIndex.Black);
-        BoardTileDictionary.Add(newGrid, newTile);
-    }
+    [Header("Color")]
+    [SerializeField] private Toggle[] ColorToggles;
+    private ColorIndex CurrentColor = ColorIndex.White;
 
     private void Update()
     {
@@ -271,14 +224,6 @@ public class LevelEditor : MonoBehaviour
         {
             StartEdit(mousePos);
         }
-    }
-
-    private bool IsOutOfBound(Vector2 mousePos)
-    {
-        float boundWidth = TileContainer.rect.width / 2;
-        float boundHeight = TileContainer.rect.height / 2;
-
-        return mousePos.x > boundWidth || mousePos.x < -boundWidth || mousePos.y > boundHeight || mousePos.y < -boundHeight;
     }
 
     private void StartEdit(Vector2 mousePos)
@@ -337,6 +282,70 @@ public class LevelEditor : MonoBehaviour
             }
         }
     }
+    #endregion Select Edit Option
+
+    #region Edit Level
+    private bool IsOutOfBound(Vector2 mousePos)
+    {
+        float boundWidth = TileContainer.rect.width / 2;
+        float boundHeight = TileContainer.rect.height / 2;
+
+        return mousePos.x > boundWidth || mousePos.x < -boundWidth || mousePos.y > boundHeight || mousePos.y < -boundHeight;
+    }
+    private void SelectShape(int value)
+    {
+        if (value != 0)
+        {
+            EmptyToggle.isOn = false;
+            TileToggle.isOn = false;
+            CircleToggle.isOn = false;
+            DeleteShape.isOn = false;
+        }
+
+        BlockDropdown.value = value;
+        CurrentShape = (Shape)value;
+    }
+
+    private void ResetDropdown(bool isToggleOn)
+    {
+        if (isToggleOn)
+        {
+            BlockDropdown.value = 0;
+            CurrentShape = Shape.None;
+        }
+    }
+
+    private void CreateShape(Vector2Int newGrid, ColorIndex currentColor, Shape currentShape)
+    {
+        Draggable newBlock = PoolingSystem.Spawn<Draggable>(
+            Block.gameObject,
+            BlockContainer.transform,
+            Block.transform.localScale,
+            GridToWorld(newGrid),
+            Quaternion.identity);
+
+        newBlock.name = $"{currentColor} {currentShape}";
+        newBlock.SetData(currentColor, newGrid, currentShape);
+
+        for (int i = 0; i < newBlock.ShapeGrid.Length; i++)
+        {
+            DraggableDictionary.Add(newBlock.StartGrid + newBlock.ShapeGrid[i], newBlock);
+        }
+    }
+
+    private void CreateCircle(Vector2Int newGrid, ColorIndex currentColor)
+    {
+        Consumable newCircle = PoolingSystem.Spawn<Consumable>(
+            Circle.gameObject,
+            CircleContainer.transform,
+            Circle.transform.localScale,
+            GridToWorld(newGrid),
+            Quaternion.identity);
+
+        newCircle.name = $"{currentColor} Circle {newGrid}";
+        newCircle.SetData(currentColor);
+        ConsumableDictionary.Add(newGrid, newCircle);
+    }
 
     private void SelectColor()
     {
@@ -373,6 +382,7 @@ public class LevelEditor : MonoBehaviour
             ConsumableDictionary.Remove(newGrid);
         }
     }
+    #endregion Edit Level
 
     private Vector2 GridToWorld(Vector2Int targetGrid)
     {
