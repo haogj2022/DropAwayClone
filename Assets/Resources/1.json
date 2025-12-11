@@ -15,10 +15,10 @@
       "Column": 0,
       "Row": 1,
       "HasBlock": false,
-      "HasCircle": false,
+      "HasCircle": true,
       "BlockColor": 0,
       "BlockShape": 0,
-      "CircleColor": 0
+      "CircleColor": 2
     },
     {
       "Column": 0,
@@ -167,10 +167,10 @@
     {
       "Column": 1,
       "Row": 8,
-      "HasBlock": false,
+      "HasBlock": true,
       "HasCircle": false,
-      "BlockColor": 0,
-      "BlockShape": 0,
+      "BlockColor": 2,
+      "BlockShape": 2,
       "CircleColor": 0
     },
     {
@@ -222,10 +222,10 @@
       "Column": 2,
       "Row": 4,
       "HasBlock": false,
-      "HasCircle": false,
+      "HasCircle": true,
       "BlockColor": 0,
       "BlockShape": 0,
-      "CircleColor": 0
+      "CircleColor": 2
     },
     {
       "Column": 2,
@@ -285,10 +285,10 @@
       "Column": 3,
       "Row": 1,
       "HasBlock": false,
-      "HasCircle": false,
+      "HasCircle": true,
       "BlockColor": 0,
       "BlockShape": 0,
-      "CircleColor": 0
+      "CircleColor": 2
     },
     {
       "Column": 3,
@@ -564,10 +564,10 @@
       "Column": 6,
       "Row": 2,
       "HasBlock": false,
-      "HasCircle": false,
+      "HasCircle": true,
       "BlockColor": 0,
       "BlockShape": 0,
-      "CircleColor": 0
+      "CircleColor": 2
     },
     {
       "Column": 6,
@@ -600,10 +600,10 @@
       "Column": 6,
       "Row": 6,
       "HasBlock": false,
-      "HasCircle": false,
+      "HasCircle": true,
       "BlockColor": 0,
       "BlockShape": 0,
-      "CircleColor": 0
+      "CircleColor": 2
     },
     {
       "Column": 6,
