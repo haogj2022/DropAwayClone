@@ -1,10 +1,13 @@
 using DG.Tweening;
+using System;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
 public class TabManager : MonoBehaviour
 {
+    public static TabManager Instance;
+
     [SerializeField] private Button ShopButton;
     [SerializeField] private Button HomeButton;
     [SerializeField] private Button SettingsButton;
@@ -19,25 +22,32 @@ public class TabManager : MonoBehaviour
     private Vector3 ShopIconStartPos;
     private Vector3 HomeIconStartPos;
     private Vector3 SettingsIconStartPos;
+    private int IconOffset = 50;
 
-    private void Start()
+    public Action OnShopButtonClicked;
+    public Action OnHomeButtonClicked;
+    public Action OnSettingsButtonClicked;
+
+    private void Awake()
     {
+        Instance = this;
         ShopButton.onClick.AddListener(HighlightShop);
         HomeButton.onClick.AddListener(HighlightHome);
         SettingsButton.onClick.AddListener(HighlightSettings);
         ShopIconStartPos.y = ShopIcon.transform.localPosition.y;
         HomeIconStartPos.y = HomeIcon.transform.localPosition.y;
         SettingsIconStartPos.y = SettingsIcon.transform.localPosition.y;
-        HighlightHome();
     }
 
     private void HighlightShop()
     {
+        OnShopButtonClicked();
+
         ShopText.enabled = true;
         HomeText.enabled = false;
         SettingsText.enabled = false;
 
-        ShopIcon.transform.DOLocalMoveY(ShopIconStartPos.y + 50, 0.1f, false);
+        ShopIcon.transform.DOLocalMoveY(ShopIconStartPos.y + IconOffset, 0.1f, false);
         ShopIcon.transform.DOLocalRotate(new Vector3(0, 0, 10), 0.1f, RotateMode.Fast);
         ShopIcon.transform.DOScale(new Vector3(1.25f, 1.25f, 1), 0.1f);
 
@@ -54,6 +64,8 @@ public class TabManager : MonoBehaviour
 
     private void HighlightHome()
     {
+        OnHomeButtonClicked();
+
         ShopText.enabled = false;
         HomeText.enabled = true;
         SettingsText.enabled = false;
@@ -62,7 +74,7 @@ public class TabManager : MonoBehaviour
         ShopIcon.transform.DOLocalRotate(new Vector3(0, 0, 0), 0.1f, RotateMode.Fast);
         ShopIcon.transform.DOScale(Vector3.one, 0.1f);
 
-        HomeIcon.transform.DOLocalMoveY(HomeIconStartPos.y + 50, 0.1f, false);
+        HomeIcon.transform.DOLocalMoveY(HomeIconStartPos.y + IconOffset, 0.1f, false);
         HomeIcon.transform.DOLocalRotate(new Vector3(0, 0, 10), 0.1f, RotateMode.Fast);
         HomeIcon.transform.DOScale(new Vector3(1.25f, 1.25f, 1), 0.1f);
 
@@ -75,6 +87,8 @@ public class TabManager : MonoBehaviour
 
     private void HighlightSettings()
     {
+        OnSettingsButtonClicked();
+
         ShopText.enabled = false;
         HomeText.enabled = false;
         SettingsText.enabled = true;
@@ -87,7 +101,7 @@ public class TabManager : MonoBehaviour
         HomeIcon.transform.DOLocalRotate(new Vector3(0, 0, 0), 0.1f, RotateMode.Fast);
         HomeIcon.transform.DOScale(Vector3.one, 0.1f);
 
-        SettingsIcon.transform.DOLocalMoveY(SettingsIconStartPos.y + 50, 0.1f, false);
+        SettingsIcon.transform.DOLocalMoveY(SettingsIconStartPos.y + IconOffset, 0.1f, false);
         SettingsIcon.transform.DOLocalRotate(new Vector3(0, 0, 10), 0.1f, RotateMode.Fast);
         SettingsIcon.transform.DOScale(new Vector3(1.25f, 1.25f, 1), 0.1f);
 
