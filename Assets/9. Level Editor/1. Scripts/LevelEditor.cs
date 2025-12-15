@@ -114,7 +114,7 @@ public class LevelEditor : MonoBehaviour
             Quaternion.identity);
 
         newTile.name = $"Tile {newGrid}";
-        newTile.SetData(ColorIndex.Black);
+        newTile.SetData(ColorIndex.Light_Gray);
         BoardTileDictionary.Add(newGrid, newTile);
     }
     #endregion Generate Grid Board

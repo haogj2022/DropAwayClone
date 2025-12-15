@@ -1,219 +1,16 @@
 using DG.Tweening;
+using Newtonsoft.Json;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
 public class BoardController : MonoBehaviour
 {
-    public static BoardController Instance;
-
     private Dictionary<Vector2Int, Draggable> DraggableDictionary = new Dictionary<Vector2Int, Draggable>();
     private Dictionary<Vector2Int, BoardTile> BoardTileDictionary = new Dictionary<Vector2Int, BoardTile>();
     private Dictionary<Vector2Int, Consumable> ConsumableDictionary = new Dictionary<Vector2Int, Consumable>();
 
-    private void Awake()
-    {
-        Instance = this;
-    }
-
-    #region Generate Board
-    [SerializeField] private int Column, Row;
-    [SerializeField] private BoardTile Tile;
-    [SerializeField] private GameObject TileContainer;
-
-    private void CreateBoard()
-    {
-        for (int i = 0; i < Column; i++)
-        {
-            for (int j = 0; j < Row; j++)
-            {
-                Vector2Int newGrid = new Vector2Int(i, j);
-
-                BoardTile boardTile = PoolingSystem.Spawn<BoardTile>(
-                    Tile.gameObject,
-                    TileContainer.transform,
-                    Tile.transform.localScale,
-                    GridToWorld(newGrid),
-                    Quaternion.identity);
-
-                boardTile.name = $"Tile {newGrid}";
-                boardTile.SetData(ColorIndex.Black);
-                BoardTileDictionary.Add(newGrid, boardTile);
-            }
-        }
-    }
-    #endregion Generate Board
-
-    #region Generate Block
-    [SerializeField] private Draggable Block;
-    [SerializeField] private GameObject BlockContainer;
-
-    private void CreateDraggableBlock()
-    {
-        Vector2Int redGrid = new Vector2Int(0, 0);
-        Draggable redShape = PoolingSystem.Spawn<Draggable>(
-            Block.gameObject,
-            BlockContainer.transform,
-            Block.transform.localScale,
-            GridToWorld(redGrid),
-            Quaternion.identity);
-
-        redShape.name = $"Red Shape";
-        redShape.SetData(ColorIndex.Red, redGrid, Shape.L);
-
-        for (int i = 0; i < redShape.ShapeGrid.Length; i++)
-        {
-            UpdateDraggableDictionary(redShape.StartGrid + redShape.ShapeGrid[i], redShape);
-        }
-
-        Vector2Int yellowGrid = new Vector2Int(2, 2);
-        Draggable yellowShape = PoolingSystem.Spawn<Draggable>(
-            Block.gameObject,
-            BlockContainer.transform,
-            Block.transform.localScale,
-            GridToWorld(yellowGrid),
-            Quaternion.identity);
-
-        yellowShape.name = $"Yellow Shape";
-        yellowShape.SetData(ColorIndex.Yellow, yellowGrid, Shape.Cross);
-
-        for (int i = 0; i < yellowShape.ShapeGrid.Length; i++)
-        {
-            UpdateDraggableDictionary(yellowShape.StartGrid + yellowShape.ShapeGrid[i], yellowShape);
-        }
-
-        Vector2Int blueGrid = new Vector2Int(0, 3);
-        Draggable blueShape = PoolingSystem.Spawn<Draggable>(
-            Block.gameObject,
-            BlockContainer.transform,
-            Block.transform.localScale,
-            GridToWorld(blueGrid),
-            Quaternion.identity);
-
-        blueShape.name = $"Blue Shape";
-        blueShape.SetData(ColorIndex.Blue, blueGrid, Shape.O);
-
-        for (int i = 0; i < blueShape.ShapeGrid.Length; i++)
-        {
-            UpdateDraggableDictionary(blueShape.StartGrid + blueShape.ShapeGrid[i], blueShape);
-        }
-
-        Vector2Int orangeGrid = new Vector2Int(2, 5);
-        Draggable orangeShape = PoolingSystem.Spawn<Draggable>(
-            Block.gameObject,
-            BlockContainer.transform,
-            Block.transform.localScale,
-            GridToWorld(orangeGrid),
-            Quaternion.identity);
-
-        orangeShape.name = $"Orange Shape";
-        orangeShape.SetData(ColorIndex.Orange, orangeGrid, Shape.T);
-
-        for (int i = 0; i < orangeShape.ShapeGrid.Length; i++)
-        {
-            UpdateDraggableDictionary(orangeShape.StartGrid + orangeShape.ShapeGrid[i], orangeShape);
-        }
-    }
-
-    public void UpdateDraggableDictionary(Vector2Int targetGrid, Draggable draggable)
-    {
-        if (DraggableDictionary.ContainsKey(targetGrid))
-        {
-            DraggableDictionary[targetGrid] = draggable;
-        }
-        else
-        {
-            DraggableDictionary.Add(targetGrid, draggable);
-        }
-    }
-    #endregion Generate Block
-
-    #region Generate Circle
-    [SerializeField] private Consumable Circle;
-    [SerializeField] private GameObject CircleContainer;
-
-    private Vector2Int[] RedGrids = new Vector2Int[]
-    {
-        new(5, 5), new(5, 6), new(2, 9), new(7, 0),
-    };
-
-    private Vector2Int[] YellowGrids = new Vector2Int[]
-    {
-        new(3, 8), new(4, 8), new(5, 8), new(5, 2), new(7, 4)
-    };
-
-    private Vector2Int[] BlueGrids = new Vector2Int[]
-    {
-        new(6, 0), new(7, 1), new(0, 8), new(7, 7)
-    };
-
-    private Vector2Int[] OrangeGrids = new Vector2Int[]
-    {
-        new(4, 0), new(1, 7), new(6, 9), new(5, 4)
-    };
-
-    private void CreateConsumableCircle()
-    {
-        for (int i = 0; i < RedGrids.Length; i++)
-        {
-            Consumable redCircle = PoolingSystem.Spawn<Consumable>(
-                Circle.gameObject,
-                CircleContainer.transform,
-                Circle.transform.localScale,
-                GridToWorld(RedGrids[i]),
-                Quaternion.identity);
-
-            redCircle.name = $"Red Circle {RedGrids[i]}";
-            redCircle.SetData(ColorIndex.Red);
-            ConsumableDictionary.Add(RedGrids[i], redCircle);
-        }
-
-        for (int i = 0; i < YellowGrids.Length; i++)
-        {
-            Consumable yellowCircle = PoolingSystem.Spawn<Consumable>(
-                Circle.gameObject,
-                CircleContainer.transform,
-                Circle.transform.localScale,
-                GridToWorld(YellowGrids[i]),
-                Quaternion.identity);
-
-            yellowCircle.name = $"Yellow Circle {YellowGrids[i]}";
-            yellowCircle.SetData(ColorIndex.Yellow);
-            ConsumableDictionary.Add(YellowGrids[i], yellowCircle);
-        }
-
-        for (int i = 0; i < BlueGrids.Length; i++)
-        {
-            Consumable blueCircle = PoolingSystem.Spawn<Consumable>(
-                Circle.gameObject,
-                CircleContainer.transform,
-                Circle.transform.localScale,
-                GridToWorld(BlueGrids[i]),
-                Quaternion.identity);
-
-            blueCircle.name = $"Blue Circle {BlueGrids[i]}";
-            blueCircle.SetData(ColorIndex.Blue);
-            ConsumableDictionary.Add(BlueGrids[i], blueCircle);
-        }
-
-        for (int i = 0; i < OrangeGrids.Length; i++)
-        {
-            Consumable orangeCircle = PoolingSystem.Spawn<Consumable>(
-                Circle.gameObject,
-                CircleContainer.transform,
-                Circle.transform.localScale,
-                GridToWorld(OrangeGrids[i]),
-                Quaternion.identity);
-
-            orangeCircle.name = $"Orange Circle {OrangeGrids[i]}";
-            orangeCircle.SetData(ColorIndex.Orange);
-            ConsumableDictionary.Add(OrangeGrids[i], orangeCircle);
-        }
-    }
-    #endregion Generate Circle
-
     #region Handle Event
-
     private float TileWidth, TileHeight;
 
     private void Start()
@@ -221,9 +18,7 @@ public class BoardController : MonoBehaviour
         RectTransform tileSize = Tile.GetComponent<RectTransform>();
         TileWidth = tileSize.rect.width;
         TileHeight = tileSize.rect.height;
-        CreateBoard();
-        CreateDraggableBlock();
-        CreateConsumableCircle();
+        LoadLevel();
         TouchController.Instance.OnStartTouching += OnStartTouching;
         TouchController.Instance.OnTouching += OnTouching;
         TouchController.Instance.OnStopTouching += OnStopTouching;
@@ -237,6 +32,124 @@ public class BoardController : MonoBehaviour
     }
     #endregion Handle Event
 
+    #region Generate Level
+    [SerializeField] private string LevelName;
+    [SerializeField] private BoardTile Tile;
+    [SerializeField] private GameObject TileContainer;
+    [SerializeField] private Draggable Block;
+    [SerializeField] private GameObject BlockContainer;
+    [SerializeField] private Consumable Circle;
+    [SerializeField] private GameObject CircleContainer;
+    private int BoardWidth, BoardHeight;
+
+    private void ClearGrid()
+    {
+        foreach (var boardTile in BoardTileDictionary.Values)
+        {
+            PoolingSystem.Despawn(Tile.gameObject, boardTile.gameObject);
+        }
+        BoardTileDictionary.Clear();
+
+        foreach (var draggable in DraggableDictionary.Values)
+        {
+            PoolingSystem.Despawn(Block.gameObject, draggable.gameObject);
+        }
+        DraggableDictionary.Clear();
+
+        foreach (var consumable in ConsumableDictionary.Values)
+        {
+            PoolingSystem.Despawn(Circle.gameObject, consumable.gameObject);
+        }
+        ConsumableDictionary.Clear();
+    }
+
+    private void LoadLevel()
+    {
+        if (LevelLoader.Instance != null)
+        {
+            LevelName = LevelLoader.Instance.GetCurrentLevel();
+        }
+
+        TextAsset level = Resources.Load<TextAsset>(LevelName);
+
+        if (level == null)
+        {
+            Debug.LogWarning($"Level {LevelName} did not exist");
+            return;
+        }
+
+        string content = level.text;
+        JsonData data = JsonConvert.DeserializeObject<JsonData>(content);
+
+        ClearGrid();
+        BoardWidth = data.BoardWidth;
+        BoardHeight = data.BoardHeight;
+
+        for (int i = 0; i < data.BoardTiles.Count; i++)
+        {
+            Vector2Int newGrid = new Vector2Int(data.BoardTiles[i].Column, data.BoardTiles[i].Row);
+            CreateBoardTile(newGrid);
+
+            if (data.BoardTiles[i].HasBlock)
+            {
+                CreateShape(newGrid, data.BoardTiles[i].BlockColor, data.BoardTiles[i].BlockShape);
+            }
+
+            if (data.BoardTiles[i].HasCircle)
+            {
+                CreateCircle(newGrid, data.BoardTiles[i].CircleColor);
+            }
+        }
+    }
+
+    private void CreateBoardTile(Vector2Int newGrid)
+    {
+        BoardTile newTile = PoolingSystem.Spawn<BoardTile>(
+            Tile.gameObject,
+            TileContainer.transform,
+            Tile.transform.localScale,
+            GridToWorld(newGrid),
+            Quaternion.identity);
+
+        newTile.name = $"Tile {newGrid}";
+        newTile.SetData(ColorIndex.Light_Gray);
+        BoardTileDictionary.Add(newGrid, newTile);
+    }
+
+    private void CreateShape(Vector2Int newGrid, ColorIndex currentColor, Shape currentShape)
+    {
+        Draggable newBlock = PoolingSystem.Spawn<Draggable>(
+            Block.gameObject,
+            BlockContainer.transform,
+            Block.transform.localScale,
+            GridToWorld(newGrid),
+            Quaternion.identity);
+
+        newBlock.name = $"{currentColor} {currentShape}";
+        newBlock.SetData(currentColor, newGrid, currentShape);
+
+        for (int i = 0; i < newBlock.ShapeGrid.Length; i++)
+        {
+            DraggableDictionary.Add(newBlock.StartGrid + newBlock.ShapeGrid[i], newBlock);
+        }
+    }
+
+    private void CreateCircle(Vector2Int newGrid, ColorIndex currentColor)
+    {
+        Consumable newCircle = PoolingSystem.Spawn<Consumable>(
+            Circle.gameObject,
+            CircleContainer.transform,
+            Circle.transform.localScale,
+            GridToWorld(newGrid),
+            Quaternion.identity);
+
+        newCircle.name = $"{currentColor} Circle {newGrid}";
+        newCircle.SetData(currentColor);
+        ConsumableDictionary.Add(newGrid, newCircle);
+    }
+
+    #endregion Generate Level
+
     #region Handle Drag Logic
     [SerializeField] private GameObject EffectContainer;
 
@@ -245,13 +158,15 @@ public class BoardController : MonoBehaviour
     private Image[] EffectImages;
     private Vector2Int OffsetGrid;
     private Vector2 Offset;
+    private bool CanDrag = true;
 
     private void OnStartTouching(Vector2 mousePos)
     {
         Vector2Int mouseGrid = WorldToGrid(mousePos);
 
-        if (DraggableDictionary.TryGetValue(mouseGrid, out var draggable))
+        if (DraggableDictionary.TryGetValue(mouseGrid, out var draggable) && CanDrag)
         {
+            Timer.Instance.ContinueTimer();
             ShapeToDrag = draggable;
             ShapeToDrag.transform.SetAsLastSibling();
             Offset = GridToWorld(mouseGrid) - GridToWorld(ShapeToDrag.StartGrid);
@@ -282,13 +197,13 @@ public class BoardController : MonoBehaviour
             EffectImages[i].color = new Color(
                 ShapeToDrag.ShapeImages[i].color.r,
                 ShapeToDrag.ShapeImages[i].color.g,
-                ShapeToDrag.ShapeImages[i].color.b, 0.1f);
+                ShapeToDrag.ShapeImages[i].color.b, 0.5f);
         }
     }
 
     private void OnTouching(Vector2 mousePos)
     {
-        if (ShapeToDrag != null)
+        if (ShapeToDrag != null && CanDrag)
         {
             Vector2Int mouseGrid = WorldToGrid(mousePos);
             Vector2Int validGrid = GetValidGrid(ShapeToDrag.StartGrid, mouseGrid - OffsetGrid);
@@ -303,11 +218,17 @@ public class BoardController : MonoBehaviour
                 EffectImages[i].name = ShapeToDrag.ShapeImages[i].name;
             }
         }
+
+        if (ConsumableDictionary.Count <= 0)
+        {
+            CanDrag = false;
+            Timer.Instance.StopTimer();
+        }
     }
 
     private void OnStopTouching(Vector2 mousePos)
     {
-        if (ShapeToDrag != null)
+        if (ShapeToDrag != null && CanDrag)
         {
             ShapeToDrag.transform.localPosition = GridToWorld(ShapeToDrag.StartGrid);
             PoolingSystem.Despawn(ShapeToDrag.gameObject, Effect.gameObject);
@@ -367,15 +288,15 @@ public class BoardController : MonoBehaviour
 
     private Vector2 GridToWorld(Vector2Int targetGrid)
     {
-        float newPosX = (targetGrid.x * TileWidth) - (TileWidth * (Column - 1) / 2);
-        float newPosY = (targetGrid.y * TileHeight) - (TileHeight * (Row - 1) / 2);
+        float newPosX = (targetGrid.x * TileWidth) - (TileWidth * (BoardWidth - 1) / 2);
+        float newPosY = (targetGrid.y * TileHeight) - (TileHeight * (BoardHeight - 1) / 2);
         return new Vector2(newPosX, newPosY);
     }
 
     private Vector2Int WorldToGrid(Vector2 targetPos)
     {
-        int newGridX = Mathf.RoundToInt((targetPos.x + (TileWidth * (Column - 1) / 2)) / TileWidth);
-        int newGridY = Mathf.RoundToInt((targetPos.y + (TileHeight * (Row - 1) / 2)) / TileHeight);
+        int newGridX = Mathf.RoundToInt((targetPos.x + (TileWidth * (BoardWidth - 1) / 2)) / TileWidth);
+        int newGridY = Mathf.RoundToInt((targetPos.y + (TileHeight * (BoardHeight - 1) / 2)) / TileHeight);
         return new Vector2Int(newGridX, newGridY);
     }
 }

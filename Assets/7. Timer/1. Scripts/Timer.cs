@@ -5,13 +5,21 @@ using UnityEngine.UI;
 
 public class Timer : MonoBehaviour
 {
+    public static Timer Instance;
+
     [SerializeField] private TMP_Text TimerText;
     [SerializeField] private Slider TimeLeft;
     [SerializeField] private Image TimeBar;
     [SerializeField] private float StartTime;
+    [SerializeField] private bool IsActive;
 
     private float CurrentTime;
     private int NearTimeUp = 10;
+
+    private void Awake()
+    {
+        Instance = this;
+    }
 
     private void Start()
     {
@@ -26,13 +34,26 @@ public class Timer : MonoBehaviour
         TimerText.transform.DOLocalJump(TimerText.transform.localPosition, 20, 1, 1, false).SetEase(Ease.OutExpo).SetLoops(NearTimeUp);
     }
 
+    public void ContinueTimer()
+    {
+        IsActive = true;
+    }
+
+    public void StopTimer()
+    {
+        IsActive = false;
+    }
+
     private void Update()
     {
         TimeLeft.value = CurrentTime / StartTime;
 
         if (CurrentTime > 0)
         {
-            CurrentTime -= Time.deltaTime;
+            if (IsActive)
+            {
+                CurrentTime -= Time.deltaTime;
+            }
         }
         else
         {

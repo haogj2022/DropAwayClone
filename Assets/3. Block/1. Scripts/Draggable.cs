@@ -129,16 +129,16 @@ public class Draggable : MonoBehaviour
                 ShapeImages.Add(BaseImage);
             }
 
-            if (ShapeGrid[i] == TextGrid)
-            {
-                ShapeText = ShapeImages[i].GetComponentInChildren<TMP_Text>();
-                ShapeText.text = $"{GridCount}";
-            }
-
             if (ShapeGrid[i] != TextGrid)
             {
                 ShapeText = ShapeImages[i].GetComponentInChildren<TMP_Text>();
                 ShapeText.text = string.Empty;
+            }
+
+            if (ShapeGrid[i] == TextGrid)
+            {
+                ShapeText = ShapeImages[i].GetComponentInChildren<TMP_Text>();
+                ShapeText.text = $"{GridCount}";
             }
         }
     }

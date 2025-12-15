@@ -13,8 +13,8 @@ public class BoardTile : MonoBehaviour
 
         switch (CurrentColor)
         {
-            case ColorIndex.Black:
-                TileImage.color = new Color(0, 0, 0, 0.5f);
+            case ColorIndex.Light_Gray:
+                TileImage.color = new Color(0.6f, 0.7f, 0.8f, 1);
                 break;
         }
     }

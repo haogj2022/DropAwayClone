@@ -1,15 +1,18 @@
 using DG.Tweening;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class Home : MonoBehaviour
 {
     [SerializeField] private RectTransform HomeRect;
+    [SerializeField] private Button PlayButton;
 
     private void Start()
     {
         TabManager.Instance.OnShopButtonClicked += OnShopButtonClicked;
         TabManager.Instance.OnHomeButtonClicked += OnHomeButtonClicked;
         TabManager.Instance.OnSettingsButtonClicked += OnSettingsButtonClicked;
+        PlayButton.onClick.AddListener(PlayGame);
     }
 
     private void OnDestroy()
@@ -17,6 +20,12 @@ public class Home : MonoBehaviour
         TabManager.Instance.OnShopButtonClicked -= OnShopButtonClicked;
         TabManager.Instance.OnHomeButtonClicked -= OnHomeButtonClicked;
         TabManager.Instance.OnSettingsButtonClicked -= OnSettingsButtonClicked;
+        PlayButton.onClick.RemoveListener(PlayGame);
+    }
+
+    private void PlayGame()
+    {
+        LevelLoader.Instance.LoadNextLevel();
     }
 
     private void OnShopButtonClicked()

@@ -66,6 +66,6 @@ public enum ColorIndex
     Light_Blue,
     Cyan,
     Lime,
-    Black,
+    Light_Gray,
     White
 }
