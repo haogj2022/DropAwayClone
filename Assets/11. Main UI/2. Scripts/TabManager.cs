@@ -39,6 +39,11 @@ public class TabManager : MonoBehaviour
         SettingsIconStartPos.y = SettingsIcon.transform.localPosition.y;
     }
 
+    private void Start()
+    {
+        Invoke(nameof(HighlightHome), 0.1f);
+    }
+
     private void HighlightShop()
     {
         OnShopButtonClicked();
