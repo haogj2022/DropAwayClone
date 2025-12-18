@@ -22,7 +22,10 @@ public class TabManager : MonoBehaviour
     private Vector3 ShopIconStartPos;
     private Vector3 HomeIconStartPos;
     private Vector3 SettingsIconStartPos;
-    private int IconOffset = 50;
+    private int OffsetY = 60;
+    private Vector3 IconRotation = new Vector3(0, 0, 15);
+    private Vector3 IconScale = new Vector3(1.2f, 1.2f, 1);
+    private float Duration = 0.1f;
 
     public Action OnShopButtonClicked;
     public Action OnHomeButtonClicked;
@@ -41,7 +44,7 @@ public class TabManager : MonoBehaviour
 
     private void Start()
     {
-        Invoke(nameof(HighlightHome), 0.1f);
+        Invoke(nameof(HighlightHome), Duration);
     }
 
     private void HighlightShop()
@@ -52,19 +55,19 @@ public class TabManager : MonoBehaviour
         HomeText.enabled = false;
         SettingsText.enabled = false;
 
-        ShopIcon.transform.DOLocalMoveY(ShopIconStartPos.y + IconOffset, 0.1f, false);
-        ShopIcon.transform.DOLocalRotate(new Vector3(0, 0, 10), 0.1f, RotateMode.Fast);
-        ShopIcon.transform.DOScale(new Vector3(1.25f, 1.25f, 1), 0.1f);
+        ShopIcon.transform.DOLocalMoveY(ShopIconStartPos.y + OffsetY, Duration, false);
+        ShopIcon.transform.DOLocalRotate(IconRotation, Duration, RotateMode.Fast);
+        ShopIcon.transform.DOScale(IconScale, Duration);
 
-        HomeIcon.transform.DOLocalMoveY(HomeIconStartPos.y, 0.1f, false);
-        HomeIcon.transform.DOLocalRotate(new Vector3(0, 0, 0), 0.1f, RotateMode.Fast);
-        HomeIcon.transform.DOScale(Vector3.one, 0.1f);
+        HomeIcon.transform.DOLocalMoveY(HomeIconStartPos.y, Duration, false);
+        HomeIcon.transform.DOLocalRotate(Vector3.zero, Duration, RotateMode.Fast);
+        HomeIcon.transform.DOScale(Vector3.one, Duration);
 
-        SettingsIcon.transform.DOLocalMoveY(SettingsIconStartPos.y, 0.1f, false);
-        SettingsIcon.transform.DOLocalRotate(new Vector3(0, 0, 0), 0.1f, RotateMode.Fast);
-        SettingsIcon.transform.DOScale(Vector3.one, 0.1f);
+        SettingsIcon.transform.DOLocalMoveY(SettingsIconStartPos.y, Duration, false);
+        SettingsIcon.transform.DOLocalRotate(Vector3.zero, Duration, RotateMode.Fast);
+        SettingsIcon.transform.DOScale(Vector3.one, Duration);
 
-        Highlight.transform.DOLocalMoveX(ShopButton.transform.localPosition.x, 0.1f, false);
+        Highlight.transform.DOLocalMoveX(ShopButton.transform.localPosition.x, Duration, false);
     }
 
     private void HighlightHome()
@@ -75,19 +78,19 @@ public class TabManager : MonoBehaviour
         HomeText.enabled = true;
         SettingsText.enabled = false;
 
-        ShopIcon.transform.DOLocalMoveY(ShopIconStartPos.y, 0.1f, false);
-        ShopIcon.transform.DOLocalRotate(new Vector3(0, 0, 0), 0.1f, RotateMode.Fast);
-        ShopIcon.transform.DOScale(Vector3.one, 0.1f);
+        ShopIcon.transform.DOLocalMoveY(ShopIconStartPos.y, Duration, false);
+        ShopIcon.transform.DOLocalRotate(Vector3.zero, Duration, RotateMode.Fast);
+        ShopIcon.transform.DOScale(Vector3.one, Duration);
 
-        HomeIcon.transform.DOLocalMoveY(HomeIconStartPos.y + IconOffset, 0.1f, false);
-        HomeIcon.transform.DOLocalRotate(new Vector3(0, 0, 10), 0.1f, RotateMode.Fast);
-        HomeIcon.transform.DOScale(new Vector3(1.25f, 1.25f, 1), 0.1f);
+        HomeIcon.transform.DOLocalMoveY(HomeIconStartPos.y + OffsetY, Duration  , false);
+        HomeIcon.transform.DOLocalRotate(IconRotation, Duration, RotateMode.Fast);
+        HomeIcon.transform.DOScale(IconScale, Duration);
 
-        SettingsIcon.transform.DOLocalMoveY(SettingsIconStartPos.y, 0.1f, false);
-        SettingsIcon.transform.DOLocalRotate(new Vector3(0, 0, 0), 0.1f, RotateMode.Fast);
-        SettingsIcon.transform.DOScale(Vector3.one, 0.1f);
+        SettingsIcon.transform.DOLocalMoveY(SettingsIconStartPos.y, Duration, false);
+        SettingsIcon.transform.DOLocalRotate(Vector3.zero,  Duration, RotateMode.Fast);
+        SettingsIcon.transform.DOScale(Vector3.one, Duration);
 
-        Highlight.transform.DOLocalMoveX(HomeButton.transform.localPosition.x, 0.1f, false);
+        Highlight.transform.DOLocalMoveX(HomeButton.transform.localPosition.x, Duration, false);
     }
 
     private void HighlightSettings()
@@ -98,18 +101,18 @@ public class TabManager : MonoBehaviour
         HomeText.enabled = false;
         SettingsText.enabled = true;
 
-        ShopIcon.transform.DOLocalMoveY(ShopIconStartPos.y, 0.1f, false);
-        ShopIcon.transform.DOLocalRotate(new Vector3(0, 0, 0), 0.1f, RotateMode.Fast);
-        ShopIcon.transform.DOScale(Vector3.one, 0.1f);
+        ShopIcon.transform.DOLocalMoveY(ShopIconStartPos.y, Duration, false);
+        ShopIcon.transform.DOLocalRotate(Vector3.zero, Duration, RotateMode.Fast);
+        ShopIcon.transform.DOScale(Vector3.one, Duration);
 
-        HomeIcon.transform.DOLocalMoveY(HomeIconStartPos.y, 0.1f, false);
-        HomeIcon.transform.DOLocalRotate(new Vector3(0, 0, 0), 0.1f, RotateMode.Fast);
-        HomeIcon.transform.DOScale(Vector3.one, 0.1f);
+        HomeIcon.transform.DOLocalMoveY(HomeIconStartPos.y, Duration, false);
+        HomeIcon.transform.DOLocalRotate(Vector3.zero, Duration, RotateMode.Fast);
+        HomeIcon.transform.DOScale(Vector3.one, Duration);
 
-        SettingsIcon.transform.DOLocalMoveY(SettingsIconStartPos.y + IconOffset, 0.1f, false);
-        SettingsIcon.transform.DOLocalRotate(new Vector3(0, 0, 10), 0.1f, RotateMode.Fast);
-        SettingsIcon.transform.DOScale(new Vector3(1.25f, 1.25f, 1), 0.1f);
+        SettingsIcon.transform.DOLocalMoveY(SettingsIconStartPos.y + OffsetY, Duration, false);
+        SettingsIcon.transform.DOLocalRotate(IconRotation, Duration, RotateMode.Fast);
+        SettingsIcon.transform.DOScale(IconScale, Duration);
 
-        Highlight.transform.DOLocalMoveX(SettingsButton.transform.localPosition.x, 0.1f, false);
+        Highlight.transform.DOLocalMoveX(SettingsButton.transform.localPosition.x, Duration, false);
     }
 }

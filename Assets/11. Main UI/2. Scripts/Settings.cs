@@ -21,13 +21,13 @@ public class Settings : MonoBehaviour
 
     private void OnShopButtonClicked()
     {
-        float newLeft = 2160;
+        float newLeft = 2340;
         SettingsRect.transform.DOLocalMoveX(newLeft, 0.1f, false);
     }
 
     private void OnHomeButtonClicked()
     {
-        float newLeft = 1080;
+        float newLeft = 1170;
         SettingsRect.transform.DOLocalMoveX(newLeft, 0.1f, false);
     }
 

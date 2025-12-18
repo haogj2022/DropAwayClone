@@ -30,7 +30,7 @@ public class Home : MonoBehaviour
 
     private void OnShopButtonClicked()
     {
-        float newLeft = 1080;
+        float newLeft = 1170;
         HomeRect.transform.DOLocalMoveX(newLeft, 0.1f, false);
     }
 
@@ -42,7 +42,7 @@ public class Home : MonoBehaviour
 
     private void OnSettingsButtonClicked()
     {
-        float newLeft = -1080;
+        float newLeft = -1170;
         HomeRect.transform.DOLocalMoveX(newLeft, 0.1f, false);
     }
 }
