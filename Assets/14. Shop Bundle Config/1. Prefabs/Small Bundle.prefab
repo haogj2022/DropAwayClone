@@ -242,10 +242,10 @@ RectTransform:
   m_Children: []
   m_Father: {fileID: 2985604626901098764}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: 12.5}
-  m_SizeDelta: {x: 0, y: -25}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: 0, y: 15}
+  m_SizeDelta: {x: 360, y: 120}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &8659610377833006933
 CanvasRenderer:
@@ -305,9 +305,9 @@ MonoBehaviour:
   m_fontSize: 60
   m_fontSizeBase: 60
   m_fontWeight: 400
-  m_enableAutoSizing: 0
+  m_enableAutoSizing: 1
   m_fontSizeMin: 18
-  m_fontSizeMax: 72
+  m_fontSizeMax: 60
   m_fontStyle: 0
   m_HorizontalAlignment: 2
   m_VerticalAlignment: 512
@@ -1031,14 +1031,14 @@ MonoBehaviour:
   BundleNameText: {fileID: 1269593529484282167}
   BundlePrice: VND 299000
   BundlePriceText: {fileID: 4872055890104538183}
+  InfiniteLivesHours: 1
+  InfiniteLivesHoursText: {fileID: 3663623312045993667}
+  RemoveAds: 0
   BuyBundleButton: {fileID: 6080657822634459863}
   BundleItemList:
   - Type: 0
     Amount: 6000
     AmountText: {fileID: 3459643156532968174}
-  - Type: 1
-    Amount: 1h
-    AmountText: {fileID: 3663623312045993667}
 --- !u!1 &5558699453695457604
 GameObject:
   m_ObjectHideFlags: 0
@@ -1185,7 +1185,7 @@ GameObject:
   - component: {fileID: 7204968959019247007}
   - component: {fileID: 3663623312045993667}
   m_Layer: 5
-  m_Name: Duration
+  m_Name: Hours
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

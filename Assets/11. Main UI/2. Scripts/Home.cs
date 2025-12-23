@@ -7,26 +7,32 @@ public class Home : MonoBehaviour
 {
     [SerializeField] private RectTransform HomeRect;
     [SerializeField] private Button PlayButton;
+    [SerializeField] private Button BuyCoinButton;
     [SerializeField] private TMP_Text CurrentCoinText;
 
     private void Start()
     {
         Shop.Instance.OnCurrentCoinUpdated += OnCurrentCoinUpdated;
-
         TabManager.Instance.OnShopButtonClicked += OnShopButtonClicked;
         TabManager.Instance.OnHomeButtonClicked += OnHomeButtonClicked;
         TabManager.Instance.OnSettingsButtonClicked += OnSettingsButtonClicked;
         PlayButton.onClick.AddListener(PlayGame);
+        BuyCoinButton.onClick.AddListener(OpenShop);
     }
 
     private void OnDestroy()
     {
         Shop.Instance.OnCurrentCoinUpdated -= OnCurrentCoinUpdated;
-
         TabManager.Instance.OnShopButtonClicked -= OnShopButtonClicked;
         TabManager.Instance.OnHomeButtonClicked -= OnHomeButtonClicked;
         TabManager.Instance.OnSettingsButtonClicked -= OnSettingsButtonClicked;
         PlayButton.onClick.RemoveListener(PlayGame);
+        BuyCoinButton.onClick.RemoveListener(OpenShop);
+    }
+
+    private void OpenShop()
+    {
+        TabManager.Instance.HighlightShop();
     }
 
     private void OnCurrentCoinUpdated(int currentCoin)

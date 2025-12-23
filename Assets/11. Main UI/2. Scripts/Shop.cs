@@ -20,8 +20,6 @@ public class Shop : MonoBehaviour
 
     private void Start()
     {
-        UpdateCurrentCoin(GameManager.Data.Coins);
-
         TabManager.Instance.OnShopButtonClicked += OnShopButtonClicked;
         TabManager.Instance.OnHomeButtonClicked += OnHomeButtonClicked;
         TabManager.Instance.OnSettingsButtonClicked += OnSettingsButtonClicked;

@@ -1,13 +1,11 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class GameManager : MonoBehaviour
 {
     public static GameManager Instance;
-    public static PlayerData Data;
+    public PlayerData Data;
 
-    private void Start()
+    private void Awake()
     {
         if (Instance != null)
         {
@@ -17,12 +15,22 @@ public class GameManager : MonoBehaviour
 
         Instance = this;
         DontDestroyOnLoad(gameObject);
+    }
+
+    private void Start()
+    {
         LoadGame();
     }
 
     private void LoadGame()
     {
         Data = PlayerDataManager.LoadPlayerData();
+        Shop.Instance.UpdateCurrentCoin(Data.Coins);
+    }
+
+    private void OnDestroy()
+    {
+        PlayerDataManager.SavePlayerData(Data);
     }
 
     public void UpdatePlayerData(ItemType itemType, int amount)
@@ -35,19 +43,22 @@ public class GameManager : MonoBehaviour
             case ItemType.Propellers:
                 Data.Propellers += amount;
                 break;
-            case ItemType.Infinite_Lives:
-                Data.InfiniteLivesDuration += amount;
-                break;
             case ItemType.Magnets:
                 Data.Magnets += amount;
                 break;
-            case ItemType.Time_Freezes:
+            case ItemType.TimeFreezes:
                 Data.TimeFreezes += amount;
                 break;
-            case ItemType.No_Ads:
-                break;
         }
+    }
 
-        PlayerDataManager.SavePlayerData(Data);
+    public void UpdatePlayerData(float infiniteLivesHours)
+    {
+        Data.InfiniteLivesHours += infiniteLivesHours;
+    }
+
+    public void UpdatePlayerData(bool removeAds = true)
+    {
+        Data.RemoveAds = removeAds;
     }
 }

@@ -7,14 +7,14 @@ public static class PlayerDataManager
     public static void SavePlayerData(PlayerData data)
     {
         string fileData = JsonConvert.SerializeObject(data, Formatting.Indented);
-        string filePath = Path.Combine(Application.dataPath, "playerData.json");
+        string filePath = Path.Combine(Application.dataPath, "Resources", "PlayerData.json");
         File.WriteAllText(filePath, fileData);
         Debug.Log($"Player data has been saved to {filePath}");
     }
 
     public static PlayerData LoadPlayerData()
     {
-        string filePath = Path.Combine(Application.dataPath, "playerData.json");
+        string filePath = Path.Combine(Application.dataPath, "Resources", "PlayerData.json");
 
         if (File.Exists(filePath) == false)
         {
@@ -29,11 +29,13 @@ public static class PlayerDataManager
     }
 }
 
+[System.Serializable]
 public class PlayerData
 {
     public int Coins;
     public int Propellers;
     public int Magnets;
     public int TimeFreezes;
-    public float InfiniteLivesDuration;
+    public float InfiniteLivesHours;
+    public bool RemoveAds;
 }

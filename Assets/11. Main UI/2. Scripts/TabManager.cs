@@ -47,7 +47,7 @@ public class TabManager : MonoBehaviour
         Invoke(nameof(HighlightHome), Duration);
     }
 
-    private void HighlightShop()
+    public void HighlightShop()
     {
         OnShopButtonClicked();
 
