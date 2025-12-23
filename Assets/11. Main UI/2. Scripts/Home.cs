@@ -1,4 +1,5 @@
 using DG.Tweening;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -6,9 +7,12 @@ public class Home : MonoBehaviour
 {
     [SerializeField] private RectTransform HomeRect;
     [SerializeField] private Button PlayButton;
+    [SerializeField] private TMP_Text CurrentCoinText;
 
     private void Start()
     {
+        Shop.Instance.OnCurrentCoinUpdated += OnCurrentCoinUpdated;
+
         TabManager.Instance.OnShopButtonClicked += OnShopButtonClicked;
         TabManager.Instance.OnHomeButtonClicked += OnHomeButtonClicked;
         TabManager.Instance.OnSettingsButtonClicked += OnSettingsButtonClicked;
@@ -17,10 +21,17 @@ public class Home : MonoBehaviour
 
     private void OnDestroy()
     {
+        Shop.Instance.OnCurrentCoinUpdated -= OnCurrentCoinUpdated;
+
         TabManager.Instance.OnShopButtonClicked -= OnShopButtonClicked;
         TabManager.Instance.OnHomeButtonClicked -= OnHomeButtonClicked;
         TabManager.Instance.OnSettingsButtonClicked -= OnSettingsButtonClicked;
         PlayButton.onClick.RemoveListener(PlayGame);
+    }
+
+    private void OnCurrentCoinUpdated(int currentCoin)
+    {
+        CurrentCoinText.text = currentCoin.ToString();
     }
 
     private void PlayGame()

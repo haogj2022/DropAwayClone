@@ -1356,6 +1356,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   HomeRect: {fileID: 3443219070309208148}
   PlayButton: {fileID: 9204968668052013494}
+  CurrentCoinText: {fileID: 7363655181156820446}
 --- !u!1 &2693466211030101005
 GameObject:
   m_ObjectHideFlags: 0
@@ -1711,7 +1712,7 @@ GameObject:
   - component: {fileID: 6226101181037533827}
   - component: {fileID: 7363655181156820446}
   m_Layer: 5
-  m_Name: Amount
+  m_Name: Current Coin
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1794,9 +1795,9 @@ MonoBehaviour:
   m_fontSize: 180
   m_fontSizeBase: 180
   m_fontWeight: 400
-  m_enableAutoSizing: 0
+  m_enableAutoSizing: 1
   m_fontSizeMin: 18
-  m_fontSizeMax: 72
+  m_fontSizeMax: 180
   m_fontStyle: 0
   m_HorizontalAlignment: 2
   m_VerticalAlignment: 512

@@ -1,12 +1,27 @@
 using DG.Tweening;
+using System;
+using TMPro;
 using UnityEngine;
 
 public class Shop : MonoBehaviour
 {
+    public static Shop Instance;
+
     [SerializeField] private RectTransform ShopRect;
+    [SerializeField] private TMP_Text CurrentCoinText;
+    private int CurrentCoin;
+
+    public Action<int> OnCurrentCoinUpdated;
+
+    private void Awake()
+    {
+        Instance = this;
+    }
 
     private void Start()
     {
+        UpdateCurrentCoin(GameManager.Data.Coins);
+
         TabManager.Instance.OnShopButtonClicked += OnShopButtonClicked;
         TabManager.Instance.OnHomeButtonClicked += OnHomeButtonClicked;
         TabManager.Instance.OnSettingsButtonClicked += OnSettingsButtonClicked;
@@ -17,6 +32,13 @@ public class Shop : MonoBehaviour
         TabManager.Instance.OnShopButtonClicked -= OnShopButtonClicked;
         TabManager.Instance.OnHomeButtonClicked -= OnHomeButtonClicked;
         TabManager.Instance.OnSettingsButtonClicked -= OnSettingsButtonClicked;
+    }
+
+    public void UpdateCurrentCoin(int amount)
+    {
+        CurrentCoin += amount;
+        CurrentCoinText.text = CurrentCoin.ToString();
+        OnCurrentCoinUpdated(CurrentCoin);
     }
 
     private void OnShopButtonClicked()
