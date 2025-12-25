@@ -29,7 +29,6 @@ public static class PlayerDataManager
     }
 }
 
-[System.Serializable]
 public class PlayerData
 {
     public int Coins;

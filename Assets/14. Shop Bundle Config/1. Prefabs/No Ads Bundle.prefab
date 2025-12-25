@@ -605,7 +605,7 @@ GameObject:
   - component: {fileID: 5349662526629452518}
   - component: {fileID: 4340619250240017126}
   m_Layer: 5
-  m_Name: No Ads Bundle
+  m_Name: No ADS Bundle
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -682,26 +682,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 65a4be87cdb9f424cbbebf7ac765dbce, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  BundleName: No ADS Bundle
+  Data: {fileID: 11400000, guid: 2c6d04f9b943901438e6d4834563104a, type: 2}
   BundleNameText: {fileID: 1270680110337332902}
-  BundlePrice: VND 399000
   BundlePriceText: {fileID: 6732755372607475368}
-  InfiniteLivesHours: 0
   InfiniteLivesHoursText: {fileID: 0}
-  RemoveAds: 1
   BuyBundleButton: {fileID: 752693658513778731}
   BundleItemList:
-  - Type: 0
-    Amount: 2000
+  - CurrentType: 0
     AmountText: {fileID: 6502073428463835673}
-  - Type: 1
-    Amount: 5
+  - CurrentType: 1
     AmountText: {fileID: 344439054362090948}
-  - Type: 2
-    Amount: 5
+  - CurrentType: 2
     AmountText: {fileID: 8042878455161376226}
-  - Type: 3
-    Amount: 5
+  - CurrentType: 3
     AmountText: {fileID: 4765355040153249603}
 --- !u!1 &2916435868604323643
 GameObject:
@@ -1783,7 +1776,7 @@ RectTransform:
   m_GameObject: {fileID: 7217428714037871578}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0.3, y: 0.3, z: 1.0007368}
+  m_LocalScale: {x: 0.3, y: 0.3, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 7289498269887957132}

@@ -1,0 +1,22 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 502c520be49f7d44e83fbf5442a8e4c2, type: 3}
+  m_Name: Medium Bundle
+  m_EditorClassIdentifier: 
+  BundleName: Medium Bundle
+  BundlePrice: 599000
+  Coins: 10000
+  Propellers: 5
+  Magnets: 5
+  TimeFreezes: 5
+  InfiniteLivesHours: 3
+  RemoveAds: 0

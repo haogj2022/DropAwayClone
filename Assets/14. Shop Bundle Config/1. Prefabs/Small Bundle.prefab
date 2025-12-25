@@ -1027,18 +1027,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 65a4be87cdb9f424cbbebf7ac765dbce, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  BundleName: Small Bundle
+  Data: {fileID: 11400000, guid: 26ca905b371e6d844a79ff293746a529, type: 2}
   BundleNameText: {fileID: 1269593529484282167}
-  BundlePrice: VND 299000
   BundlePriceText: {fileID: 4872055890104538183}
-  InfiniteLivesHours: 1
-  InfiniteLivesHoursText: {fileID: 3663623312045993667}
-  RemoveAds: 0
   BuyBundleButton: {fileID: 6080657822634459863}
   BundleItemList:
-  - Type: 0
-    Amount: 6000
+  - CurrentType: 0
     AmountText: {fileID: 3459643156532968174}
+  - CurrentType: 4
+    AmountText: {fileID: 3663623312045993667}
 --- !u!1 &5558699453695457604
 GameObject:
   m_ObjectHideFlags: 0

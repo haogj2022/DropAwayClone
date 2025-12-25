@@ -15,16 +15,11 @@ public class GameManager : MonoBehaviour
 
         Instance = this;
         DontDestroyOnLoad(gameObject);
+        Data = PlayerDataManager.LoadPlayerData();
     }
 
     private void Start()
     {
-        LoadGame();
-    }
-
-    private void LoadGame()
-    {
-        Data = PlayerDataManager.LoadPlayerData();
         Shop.Instance.UpdateCurrentCoin(Data.Coins);
     }
 

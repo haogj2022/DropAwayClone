@@ -5,47 +5,41 @@ using UnityEngine.UI;
 
 public class ShopBundleConfig : MonoBehaviour
 {
-    [SerializeField] private string BundleName;
+    [SerializeField] private BundleData Data;
     [SerializeField] private TMP_Text BundleNameText;
-    [SerializeField] private string BundlePrice;
     [SerializeField] private TMP_Text BundlePriceText;
-    [SerializeField] private float InfiniteLivesHours;
-    [SerializeField] private TMP_Text InfiniteLivesHoursText;
-    [SerializeField] private bool RemoveAds;
     [SerializeField] private Button BuyBundleButton;
-    [SerializeField] private List<BundleItem> BundleItemList = new();
+    [SerializeField] private List<BundleItem> BundleItemList;
 
     private void Start()
     {
-        BundleNameText.text = BundleName;
-        BundlePriceText.text = BundlePrice;
+        BundleNameText.text = Data.BundleName;
+        BundlePriceText.text = $"VND {Data.BundlePrice}";
         BuyBundleButton.onClick.AddListener(BuyBundle);
 
         foreach (BundleItem item in BundleItemList)
         {
-            if (item.AmountText != null)
+            switch (item.CurrentType)
             {
-                if (item.Type == ItemType.Propellers || item.Type == ItemType.Magnets || item.Type == ItemType.TimeFreezes)
-                {
-                    item.AmountText.text = $"x{item.Amount}";
-                    continue;
-                }
-
-                item.AmountText.text = item.Amount.ToString();
+                case ItemType.Coins:
+                    item.AmountText.text = Data.Coins.ToString();
+                    break;
+                case ItemType.Propellers:
+                    item.AmountText.text = $"x{Data.Propellers}";
+                    break;
+                case ItemType.Magnets:
+                    item.AmountText.text = $"x{Data.Magnets}";
+                    break;
+                case ItemType.TimeFreezes:
+                    item.AmountText.text = $"x{Data.TimeFreezes}";
+                    break;
+                case ItemType.InfiniteLivesHours:
+                    item.AmountText.text = $"{Data.InfiniteLivesHours}h";
+                    break;
             }
         }
 
-        if (InfiniteLivesHoursText != null)
-        {
-            InfiniteLivesHoursText.text = $"{InfiniteLivesHours}h";
-        }
-
-        Invoke(nameof(CheckRemoveAds), 0.1f);
-    }
-
-    private void CheckRemoveAds()
-    {
-        if (GameManager.Instance.Data.RemoveAds && RemoveAds)
+        if (GameManager.Instance.Data.RemoveAds && Data.RemoveAds)
         {
             BuyBundleButton.interactable = false;
             BundlePriceText.text = "Purchased";
@@ -59,26 +53,37 @@ public class ShopBundleConfig : MonoBehaviour
 
     private void BuyBundle()
     {
-        Debug.Log($"Bought {BundleName} for {BundlePrice}");
+        Debug.Log($"Bought {Data.BundleName} for VND {Data.BundlePrice}");
 
         foreach (BundleItem item in BundleItemList)
         {
-            GameManager.Instance.UpdatePlayerData(item.Type, item.Amount);
-            Debug.Log($"Obtained {item.Amount} {item.Type}");
-
-            if (item.Type == ItemType.Coins)
+            switch (item.CurrentType)
             {
-                Shop.Instance.UpdateCurrentCoin(item.Amount);
+                case ItemType.Coins:
+                    Shop.Instance.UpdateCurrentCoin(Data.Coins);
+                    GameManager.Instance.UpdatePlayerData(item.CurrentType, Data.Coins);
+                    Debug.Log($"Obtained {Data.Coins} {item.CurrentType}");
+                    break;
+                case ItemType.Propellers:
+                    GameManager.Instance.UpdatePlayerData(item.CurrentType, Data.Propellers);
+                    Debug.Log($"Obtained {Data.Propellers} {item.CurrentType}");
+                    break;
+                case ItemType.Magnets:
+                    GameManager.Instance.UpdatePlayerData(item.CurrentType, Data.Magnets);
+                    Debug.Log($"Obtained {Data.Magnets} {item.CurrentType}");
+                    break;
+                case ItemType.TimeFreezes:
+                    GameManager.Instance.UpdatePlayerData(item.CurrentType, Data.TimeFreezes);
+                    Debug.Log($"Obtained {Data.TimeFreezes} {item.CurrentType}");
+                    break;
+                case ItemType.InfiniteLivesHours:
+                    GameManager.Instance.UpdatePlayerData(Data.InfiniteLivesHours);
+                    Debug.Log($"Obtained {Data.InfiniteLivesHours} hours of {item.CurrentType}");
+                    break;
             }
         }
 
-        if (InfiniteLivesHours > 0)
-        {
-            GameManager.Instance.UpdatePlayerData(InfiniteLivesHours);
-            Debug.Log($"Obtained {InfiniteLivesHours} hours of Infinite Lives");
-        }
-
-        if (RemoveAds)
+        if (Data.RemoveAds)
         {
             GameManager.Instance.UpdatePlayerData();
             Debug.Log($"Removed Ads");
@@ -91,8 +96,7 @@ public class ShopBundleConfig : MonoBehaviour
 [System.Serializable]
 public class BundleItem
 {
-    public ItemType Type;
-    public int Amount;
+    public ItemType CurrentType;
     public TMP_Text AmountText;
 }
 
@@ -102,4 +106,5 @@ public enum ItemType
     Propellers,
     Magnets,
     TimeFreezes,
+    InfiniteLivesHours,
 }
