@@ -10,9 +10,7 @@ public class ShopBundleConfig : MonoBehaviour
     [SerializeField] private TMP_Text BundlePriceText;
     [SerializeField] private Button BuyBundleButton;
     [SerializeField] private GameObject ItemGroup;
-    [SerializeField] private GameObject RedBackground;
-    [SerializeField] private GameObject PurpleBackground;
-    [SerializeField] private GameObject BlueBackground;
+    [SerializeField] private Image BundleBackground;
     [SerializeField] private List<BundleItem> BundleItemList;
     private Bundle CurrentBundle;
     private bool RemoveAds;
@@ -40,6 +38,7 @@ public class ShopBundleConfig : MonoBehaviour
 
         for (int i = 0; i < bundle.ItemList.Count; i++)
         {
+            BundleItemList[i].ItemImage.enabled = true;
             BundleItemList[i].ItemImage.sprite = bundle.ItemList[i].ItemSprite;
             BundleItemList[i].ItemImage.SetNativeSize();
             BundleItemList[i].ItemImage.preserveAspect = true;
@@ -64,18 +63,7 @@ public class ShopBundleConfig : MonoBehaviour
             }
         }
 
-        switch (bundle.Group)
-        {
-            case BundleGroup.Bundles:
-                RedBackground.SetActive(true);
-                break;
-            case BundleGroup.NoAds:
-                PurpleBackground.SetActive(true);
-                break;
-            case BundleGroup.Coins:
-                BlueBackground.SetActive(true);
-                break;
-        }
+        BundleBackground.color = bundle.BundleGroupColors[bundle.Group];
 
         if (bundle.RemoveAds)
         {
