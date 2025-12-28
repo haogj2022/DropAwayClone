@@ -28,7 +28,7 @@ public class GameManager : MonoBehaviour
         PlayerDataManager.SavePlayerData(Data);
     }
 
-    public void UpdatePlayerData(ItemType itemType, int amount)
+    public void UpdatePlayerData(ItemType itemType, int amount = 0)
     {
         switch (itemType)
         {
@@ -44,16 +44,12 @@ public class GameManager : MonoBehaviour
             case ItemType.TimeFreezes:
                 Data.TimeFreezes += amount;
                 break;
+            case ItemType.InfiniteLivesHours:
+                Data.InfiniteLivesHours += amount;
+                break;
+            case ItemType.RemoveAds:
+                Data.RemoveAds = true;
+                break;
         }
-    }
-
-    public void UpdatePlayerData(float infiniteLivesHours)
-    {
-        Data.InfiniteLivesHours += infiniteLivesHours;
-    }
-
-    public void UpdatePlayerData(bool removeAds = true)
-    {
-        Data.RemoveAds = removeAds;
     }
 }

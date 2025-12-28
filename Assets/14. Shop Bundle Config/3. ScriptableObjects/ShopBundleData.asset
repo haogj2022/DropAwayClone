@@ -1,0 +1,153 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 502c520be49f7d44e83fbf5442a8e4c2, type: 3}
+  m_Name: ShopBundleData
+  m_EditorClassIdentifier: 
+  BundleList:
+  - Name: Small Bundle
+    Price: 0
+    Group: 0
+    Type: 0
+    ItemList:
+    - CurrentItemType: 0
+      ItemSprite: {fileID: 21300000, guid: 4bc5c9a775e6830479588572f1e0cbf9, type: 3}
+      ItemAmount: 6000
+    - CurrentItemType: 4
+      ItemSprite: {fileID: 21300000, guid: 03da055123d86e249a6d0e89da0a145d, type: 3}
+      ItemAmount: 1
+    RemoveAds: 0
+  - Name: Medium Bundle
+    Price: 0
+    Group: 0
+    Type: 0
+    ItemList:
+    - CurrentItemType: 0
+      ItemSprite: {fileID: 21300000, guid: 90739e1c410cf8f4992dcc7b7a270a25, type: 3}
+      ItemAmount: 10000
+    - CurrentItemType: 4
+      ItemSprite: {fileID: 21300000, guid: 03da055123d86e249a6d0e89da0a145d, type: 3}
+      ItemAmount: 3
+    - CurrentItemType: 1
+      ItemSprite: {fileID: 21300000, guid: 7902a59c474ef064eb923a2e14aeead0, type: 3}
+      ItemAmount: 5
+    - CurrentItemType: 2
+      ItemSprite: {fileID: 21300000, guid: ad1f0f8e7a9a9ca47b5526a3cef6f2ef, type: 3}
+      ItemAmount: 5
+    - CurrentItemType: 3
+      ItemSprite: {fileID: 21300000, guid: 934aabf4a379afb4ba613c548095d38a, type: 3}
+      ItemAmount: 5
+    RemoveAds: 0
+  - Name: Large Bundle
+    Price: 0
+    Group: 0
+    Type: 0
+    ItemList:
+    - CurrentItemType: 0
+      ItemSprite: {fileID: 21300000, guid: 20f0a59c3241c4a4582e16c8170239fc, type: 3}
+      ItemAmount: 16000
+    - CurrentItemType: 4
+      ItemSprite: {fileID: 21300000, guid: 03da055123d86e249a6d0e89da0a145d, type: 3}
+      ItemAmount: 6
+    - CurrentItemType: 1
+      ItemSprite: {fileID: 21300000, guid: 7902a59c474ef064eb923a2e14aeead0, type: 3}
+      ItemAmount: 10
+    - CurrentItemType: 2
+      ItemSprite: {fileID: 21300000, guid: ad1f0f8e7a9a9ca47b5526a3cef6f2ef, type: 3}
+      ItemAmount: 10
+    - CurrentItemType: 3
+      ItemSprite: {fileID: 21300000, guid: 934aabf4a379afb4ba613c548095d38a, type: 3}
+      ItemAmount: 10
+    RemoveAds: 0
+  - Name: No ADS
+    Price: 0
+    Group: 1
+    Type: 0
+    ItemList:
+    - CurrentItemType: 5
+      ItemSprite: {fileID: 21300000, guid: 5fa4c4cbc3785314abbb7161f2d1942b, type: 3}
+      ItemAmount: 0
+    RemoveAds: 1
+  - Name: No ADS Bundle
+    Price: 0
+    Group: 1
+    Type: 0
+    ItemList:
+    - CurrentItemType: 5
+      ItemSprite: {fileID: 21300000, guid: 5fa4c4cbc3785314abbb7161f2d1942b, type: 3}
+      ItemAmount: 0
+    - CurrentItemType: 0
+      ItemSprite: {fileID: 21300000, guid: 4bc5c9a775e6830479588572f1e0cbf9, type: 3}
+      ItemAmount: 2000
+    - CurrentItemType: 1
+      ItemSprite: {fileID: 21300000, guid: 7902a59c474ef064eb923a2e14aeead0, type: 3}
+      ItemAmount: 5
+    - CurrentItemType: 2
+      ItemSprite: {fileID: 21300000, guid: ad1f0f8e7a9a9ca47b5526a3cef6f2ef, type: 3}
+      ItemAmount: 5
+    - CurrentItemType: 3
+      ItemSprite: {fileID: 21300000, guid: 934aabf4a379afb4ba613c548095d38a, type: 3}
+      ItemAmount: 5
+    RemoveAds: 1
+  - Name: 1000 Coins
+    Price: 0
+    Group: 2
+    Type: 0
+    ItemList:
+    - CurrentItemType: 0
+      ItemSprite: {fileID: 21300000, guid: aabd6e058d6f8fa43ab55a2e1e6b29be, type: 3}
+      ItemAmount: 1000
+    RemoveAds: 0
+  - Name: 5000 Coins
+    Price: 0
+    Group: 2
+    Type: 0
+    ItemList:
+    - CurrentItemType: 0
+      ItemSprite: {fileID: 21300000, guid: 4bc5c9a775e6830479588572f1e0cbf9, type: 3}
+      ItemAmount: 5000
+    RemoveAds: 0
+  - Name: 10000 Coins
+    Price: 0
+    Group: 2
+    Type: 0
+    ItemList:
+    - CurrentItemType: 0
+      ItemSprite: {fileID: 21300000, guid: 90739e1c410cf8f4992dcc7b7a270a25, type: 3}
+      ItemAmount: 10000
+    RemoveAds: 0
+  - Name: 25000 Coins
+    Price: 0
+    Group: 2
+    Type: 0
+    ItemList:
+    - CurrentItemType: 0
+      ItemSprite: {fileID: 21300000, guid: 20f0a59c3241c4a4582e16c8170239fc, type: 3}
+      ItemAmount: 25000
+    RemoveAds: 0
+  - Name: 50000 Coins
+    Price: 0
+    Group: 2
+    Type: 0
+    ItemList:
+    - CurrentItemType: 0
+      ItemSprite: {fileID: 21300000, guid: a69e2503dedc0a2459db7c9f75b02bc2, type: 3}
+      ItemAmount: 50000
+    RemoveAds: 0
+  - Name: 100000 Coins
+    Price: 0
+    Group: 2
+    Type: 0
+    ItemList:
+    - CurrentItemType: 0
+      ItemSprite: {fileID: 21300000, guid: 82d8c8db23582b64abf71fd5d2c5d5e6, type: 3}
+      ItemAmount: 100000
+    RemoveAds: 0

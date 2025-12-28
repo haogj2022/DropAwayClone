@@ -267,7 +267,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0.5}
   m_AnchorMax: {x: 0, y: 0.5}
-  m_AnchoredPosition: {x: 260, y: 0}
+  m_AnchoredPosition: {x: 250, y: 0}
   m_SizeDelta: {x: 250, y: 100}
   m_Pivot: {x: 0, y: 0.5}
 --- !u!222 &8014056976694559411
@@ -932,13 +932,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 65a4be87cdb9f424cbbebf7ac765dbce, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Data: {fileID: 0}
-  GoldStackImage: {fileID: 0}
   BundleNameText: {fileID: 7417336296131844233}
   BundlePriceText: {fileID: 8654622009868328828}
   BuyBundleButton: {fileID: 3732573875646651036}
+  ItemGroup: {fileID: 0}
+  RedBackground: {fileID: 0}
+  PurpleBackground: {fileID: 4343917887543999560}
+  BlueBackground: {fileID: 1706731057458489735}
   BundleItemList:
-  - CurrentType: 0
+  - ItemImage: {fileID: 2948455209483397537}
     AmountText: {fileID: 7417336296131844233}
 --- !u!1 &8578918781180883737
 GameObject:
@@ -967,14 +969,14 @@ RectTransform:
   m_GameObject: {fileID: 8578918781180883737}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0.5, y: 0.5, z: 1}
+  m_LocalScale: {x: 0.4, y: 0.4, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 6470393166592306543}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0.5}
   m_AnchorMax: {x: 0, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 25, y: 0}
   m_SizeDelta: {x: 512, y: 512}
   m_Pivot: {x: 0, y: 0.5}
 --- !u!222 &2754865426657335021

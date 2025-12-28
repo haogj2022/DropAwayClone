@@ -1,3 +1,4 @@
+using JetBrains.Annotations;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
@@ -5,110 +6,132 @@ using UnityEngine.UI;
 
 public class ShopBundleConfig : MonoBehaviour
 {
-    [SerializeField] private BundleData Data;
-    [SerializeField] private Image GoldStackImage;
     [SerializeField] private TMP_Text BundleNameText;
     [SerializeField] private TMP_Text BundlePriceText;
     [SerializeField] private Button BuyBundleButton;
+    [SerializeField] private GameObject ItemGroup;
+    [SerializeField] private GameObject RedBackground;
+    [SerializeField] private GameObject PurpleBackground;
+    [SerializeField] private GameObject BlueBackground;
     [SerializeField] private List<BundleItem> BundleItemList;
+    private Bundle CurrentBundle;
+    private bool RemoveAds;
 
-    //private void Start()
-    //{
-    //    GoldStackImage.sprite = Data.GoldImage;
-    //    GoldStackImage.SetNativeSize();
-    //    GoldStackImage.preserveAspect = true;
-    //    BundleNameText.text = Data.BundleName;
-    //    //BundlePriceText.text = $"VND {Data.BundlePrice}";
-    //    BuyBundleButton.onClick.AddListener(BuyBundle);
+    private void Start()
+    {
+        BuyBundleButton.onClick.AddListener(BuyBundle);
+    }
 
-    //    foreach (BundleItem item in BundleItemList)
-    //    {
-    //        switch (item.CurrentType)
-    //        {
-    //            case ItemType.Coins:
-    //                item.AmountText.text = Data.Coins.ToString();
-    //                break;
-    //            case ItemType.Propellers:
-    //                item.AmountText.text = $"x{Data.Propellers}";
-    //                break;
-    //            case ItemType.Magnets:
-    //                item.AmountText.text = $"x{Data.Magnets}";
-    //                break;
-    //            case ItemType.TimeFreezes:
-    //                item.AmountText.text = $"x{Data.TimeFreezes}";
-    //                break;
-    //            case ItemType.InfiniteLivesHours:
-    //                item.AmountText.text = $"{Data.InfiniteLivesHours}h";
-    //                break;
-    //        }
-    //    }
+    private void OnDestroy()
+    {
+        BuyBundleButton.onClick.RemoveListener(BuyBundle);
+    }
 
-    //    if (GameManager.Instance.Data.RemoveAds && Data.RemoveAds)
-    //    {
-    //        BuyBundleButton.interactable = false;
-    //        BundlePriceText.text = "Purchased";
-    //    }
-    //}
+    public void LoadData(Bundle bundle)
+    {
+        CurrentBundle = bundle;
+        BundleNameText.text = bundle.Name;
+        BundlePriceText.text = bundle.Price.ToString();
 
-    //private void OnDestroy()
-    //{
-    //    BuyBundleButton.onClick.RemoveListener(BuyBundle);
-    //}
+        if (bundle.ItemList.Count > 2)
+        {
+            ItemGroup.SetActive(true);
+        }
 
-    //private void BuyBundle()
-    //{
-    //    Debug.Log($"Bought {Data.BundleName} for VND {Data.BundlePrice}");
+        for (int i = 0; i < bundle.ItemList.Count; i++)
+        {
+            BundleItemList[i].ItemImage.sprite = bundle.ItemList[i].ItemSprite;
+            BundleItemList[i].ItemImage.SetNativeSize();
+            BundleItemList[i].ItemImage.preserveAspect = true;
 
-    //    foreach (BundleItem item in BundleItemList)
-    //    {
-    //        switch (item.CurrentType)
-    //        {
-    //            case ItemType.Coins:
-    //                Shop.Instance.UpdateCurrentCoin(Data.Coins);
-    //                GameManager.Instance.UpdatePlayerData(item.CurrentType, Data.Coins);
-    //                Debug.Log($"Obtained {Data.Coins} {item.CurrentType}");
-    //                break;
-    //            case ItemType.Propellers:
-    //                GameManager.Instance.UpdatePlayerData(item.CurrentType, Data.Propellers);
-    //                Debug.Log($"Obtained {Data.Propellers} {item.CurrentType}");
-    //                break;
-    //            case ItemType.Magnets:
-    //                GameManager.Instance.UpdatePlayerData(item.CurrentType, Data.Magnets);
-    //                Debug.Log($"Obtained {Data.Magnets} {item.CurrentType}");
-    //                break;
-    //            case ItemType.TimeFreezes:
-    //                GameManager.Instance.UpdatePlayerData(item.CurrentType, Data.TimeFreezes);
-    //                Debug.Log($"Obtained {Data.TimeFreezes} {item.CurrentType}");
-    //                break;
-    //            case ItemType.InfiniteLivesHours:
-    //                GameManager.Instance.UpdatePlayerData(Data.InfiniteLivesHours);
-    //                Debug.Log($"Obtained {Data.InfiniteLivesHours} hours of {item.CurrentType}");
-    //                break;
-    //        }
-    //    }
+            switch (bundle.ItemList[i].CurrentItemType)
+            {
+                case ItemType.Coins:
+                    BundleItemList[i].AmountText.text = bundle.ItemList[i].ItemAmount.ToString();
+                    break;
+                case ItemType.Propellers:
+                case ItemType.Magnets:
+                case ItemType.TimeFreezes:
+                    BundleItemList[i].AmountText.text = $"x{bundle.ItemList[i].ItemAmount}";
+                    break;
+                case ItemType.InfiniteLivesHours:
+                    BundleItemList[i].AmountText.text = $"{bundle.ItemList[i].ItemAmount}h";
+                    break;
+                case ItemType.RemoveAds:
+                    BundleItemList[i].AmountText.text = string.Empty;
+                    BundleNameText.text = bundle.Name;
+                    break;
+            }
+        }
 
-    //    if (Data.RemoveAds)
-    //    {
-    //        GameManager.Instance.UpdatePlayerData();
-    //        Debug.Log($"Removed Ads");
-    //        BuyBundleButton.interactable = false;
-    //        BundlePriceText.text = "Purchased";
-    //    }
-    //}
+        switch (bundle.Group)
+        {
+            case BundleGroup.Bundles:
+                RedBackground.SetActive(true);
+                break;
+            case BundleGroup.NoAds:
+                PurpleBackground.SetActive(true);
+                break;
+            case BundleGroup.Coins:
+                BlueBackground.SetActive(true);
+                break;
+        }
+
+        if (bundle.RemoveAds)
+        {
+            RemoveAds = true;
+        }
+
+        if (GameManager.Instance.Data.RemoveAds && RemoveAds)
+        {
+            BuyBundleButton.interactable = false;
+            BundlePriceText.text = "Purchased";
+        }
+    }
+
+    private void BuyBundle()
+    {
+        if (CurrentBundle != null)
+        {
+            Debug.Log($"Bought {CurrentBundle.Name} for {CurrentBundle.Price}");
+
+            foreach (var item in CurrentBundle.ItemList)
+            {
+                GameManager.Instance.UpdatePlayerData(item.CurrentItemType, item.ItemAmount);
+
+                if (item.CurrentItemType == ItemType.Coins)
+                {
+                    Shop.Instance.UpdateCurrentCoin(item.ItemAmount);
+                }
+
+                if (item.CurrentItemType == ItemType.InfiniteLivesHours)
+                {
+                    Debug.Log($"Obtained {item.ItemAmount} hours of {item.CurrentItemType}");
+                }
+                else if (item.CurrentItemType == ItemType.RemoveAds)
+                {
+                    Debug.Log("Removed Ads");
+                }
+                else
+                {
+                    Debug.Log($"Obtained {item.ItemAmount} {item.CurrentItemType}");
+                }
+            }
+        }
+
+        if (RemoveAds)
+        {
+            GameManager.Instance.UpdatePlayerData(ItemType.RemoveAds);
+            BuyBundleButton.interactable = false;
+            BundlePriceText.text = "Purchased";
+            
+        }
+    }
 }
 
 [System.Serializable]
 public class BundleItem
 {
-    public ItemType CurrentType;
+    public Image ItemImage;
     public TMP_Text AmountText;
-}
-
-public enum ItemType
-{
-    Coins,
-    Propellers,
-    Magnets,
-    TimeFreezes,
-    InfiniteLivesHours,
 }

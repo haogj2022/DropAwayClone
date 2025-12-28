@@ -9,6 +9,7 @@ public class Shop : MonoBehaviour
 
     [SerializeField] private RectTransform ShopRect;
     [SerializeField] private TMP_Text CurrentCoinText;
+   
     private int CurrentCoin;
 
     public Action<int> OnCurrentCoinUpdated;
